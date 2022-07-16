@@ -1,8 +1,42 @@
 import { v4 as uuidv4 } from "uuid";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { AnnotateStartMenu } from "./AnnotateStartMenu/AnnotateStartMenu";
+import { App } from "./App";
 // const uuid = require("uuid");
 // import v4 from "uuid/v4";
 
 console.log("AnnotatorJs Loaded! ✌🏻");
+
+const startAnnotatorButtonDiv = document.createElement("div");
+// startAnnotatorButtonDiv.className = `AnnotateJs_StartAnnotatorButtonDiv_${uniqueClassNameGen}`;
+startAnnotatorButtonDiv.id = "AnnotateJs_StartAnnotatorButtonDiv";
+startAnnotatorButtonDiv.style.position = "fixed";
+startAnnotatorButtonDiv.style.bottom = "0px";
+startAnnotatorButtonDiv.style.right = "50%";
+// startAnnotatorButtonDiv.style.width = "100px";
+// startAnnotatorButtonDiv.style.height = "100px";
+// startAnnotatorButtonDiv.style.border = "1px solid blue";
+startAnnotatorButtonDiv.style.transform = "translate(50%)";
+// body.appendChild(startAnnotatorButtonDiv);
+document.body.appendChild(startAnnotatorButtonDiv);
+// const tempppp = document.createElement("div");
+// tempppp.className = `AnnotateJs_StartAnnotatorButtonDiv_${uniqueClassNameGen}`;
+// tempppp.style.position = "fixed";
+// tempppp.style.top = "50%";
+// tempppp.style.right = "50%";
+// tempppp.style.width = "100px";
+// tempppp.style.height = "100px";
+// tempppp.style.border = "1px solid blue";
+// tempppp.style.transform = "translate(0%, -50%)";
+// // body.appendChild(startAnnotatorButtonDiv);
+// document.body.appendChild(tempppp);
+
+// ReactDOM.render(<AnnotateStartMenu />, tempppp);
+// ReactDOM.createPortal(<AnnotateStartMenu />, startAnnotatorButtonDiv);
+// ReactDOM.createPortal(<AnnotateStartMenu />, startAnnotatorButtonDiv);
+// ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App/>);
+ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App />);
 
 const uniqueClassNameGen = uuidv4();
 {
@@ -211,43 +245,45 @@ const assignUniqueClasses = () => {
 
 assignUniqueClasses();
 
-document.pointerEvents = "none";
-// document.body.style.pointerEvents = "none";
-document.body.style.userSelect = "none";
-window.addEventListener("mouseover", function (e) {
-    updateMask(e.target);
-});
+const startAnnonatation = () => {
+    // document.pointerEvents = "none";
+    // document.body.style.pointerEvents = "none";
+    document.body.style.userSelect = "none";
+    window.addEventListener("mouseover", function (e) {
+        updateMask(e.target);
+    });
 
-window.addEventListener("mousedown", function (e) {
-    console.log(e.target);
-});
+    window.addEventListener("mousedown", function (e) {
+        console.log(e.target);
+    });
 
-function updateMask(target) {
-    let elements = document.getElementsByClassName("highlight-wrap");
-    let hObj;
-    if (elements.length !== 0) {
-        hObj = elements[0];
-    } else {
-        hObj = document.createElement("div");
-        hObj.className = "highlight-wrap";
-        hObj.style.position = "absolute";
-        hObj.style.backgroundColor = "aqua";
-        hObj.style.opacity = "0.5";
-        hObj.style.cursor = "default";
-        // hObj.style.pointerEvents = "auto";
-        hObj.style.pointerEvents = "none";
-        hObj.onmousedown = function (e) {
-            console.log("mousedown");
-        };
-        hObj.style.zIndex = "9999999";
-        hObj.style.boxSizing = "border-box";
-        hObj.style.border = "1px solid blue";
-        document.body.appendChild(hObj);
+    function updateMask(target) {
+        let elements = document.getElementsByClassName("highlight-wrap");
+        let hObj;
+        if (elements.length !== 0) {
+            hObj = elements[0];
+        } else {
+            hObj = document.createElement("div");
+            hObj.className = "highlight-wrap";
+            hObj.style.position = "absolute";
+            hObj.style.backgroundColor = "aqua";
+            hObj.style.opacity = "0.5";
+            hObj.style.cursor = "default";
+            // hObj.style.pointerEvents = "auto";
+            hObj.style.pointerEvents = "none";
+            hObj.onmousedown = function (e) {
+                console.log("mousedown");
+            };
+            hObj.style.zIndex = "9999999";
+            hObj.style.boxSizing = "border-box";
+            hObj.style.border = "1px solid blue";
+            document.body.appendChild(hObj);
+        }
+        let rect = target.getBoundingClientRect();
+        // target.style.pointerEvents = "none";
+        hObj.style.left = rect.left + window.scrollX + "px";
+        hObj.style.top = rect.top + window.scrollY + "px";
+        hObj.style.width = rect.width + "px";
+        hObj.style.height = rect.height + "px";
     }
-    let rect = target.getBoundingClientRect();
-    // target.style.pointerEvents = "none";
-    hObj.style.left = rect.left + window.scrollX + "px";
-    hObj.style.top = rect.top + window.scrollY + "px";
-    hObj.style.width = rect.width + "px";
-    hObj.style.height = rect.height + "px";
-}
+};
