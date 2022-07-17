@@ -3,40 +3,23 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { AnnotateStartMenu } from "./AnnotateStartMenu/AnnotateStartMenu";
 import { App } from "./App";
-// const uuid = require("uuid");
-// import v4 from "uuid/v4";
+import { getStartAnnotation } from "./contants";
 
 console.log("AnnotatorJs Loaded! ✌🏻");
 
-const startAnnotatorButtonDiv = document.createElement("div");
-// startAnnotatorButtonDiv.className = `AnnotateJs_StartAnnotatorButtonDiv_${uniqueClassNameGen}`;
-startAnnotatorButtonDiv.id = "AnnotateJs_StartAnnotatorButtonDiv";
-startAnnotatorButtonDiv.style.position = "fixed";
-startAnnotatorButtonDiv.style.bottom = "0px";
-startAnnotatorButtonDiv.style.right = "50%";
-// startAnnotatorButtonDiv.style.width = "100px";
-// startAnnotatorButtonDiv.style.height = "100px";
-// startAnnotatorButtonDiv.style.border = "1px solid blue";
-startAnnotatorButtonDiv.style.transform = "translate(50%)";
-// body.appendChild(startAnnotatorButtonDiv);
-document.body.appendChild(startAnnotatorButtonDiv);
-// const tempppp = document.createElement("div");
-// tempppp.className = `AnnotateJs_StartAnnotatorButtonDiv_${uniqueClassNameGen}`;
-// tempppp.style.position = "fixed";
-// tempppp.style.top = "50%";
-// tempppp.style.right = "50%";
-// tempppp.style.width = "100px";
-// tempppp.style.height = "100px";
-// tempppp.style.border = "1px solid blue";
-// tempppp.style.transform = "translate(0%, -50%)";
-// // body.appendChild(startAnnotatorButtonDiv);
-// document.body.appendChild(tempppp);
+const startRenderingReact = () => {
+    const startAnnotatorButtonDiv = document.createElement("div");
+    // startAnnotatorButtonDiv.className = `AnnotateJs_StartAnnotatorButtonDiv_${uniqueClassNameGen}`;
+    startAnnotatorButtonDiv.id = "AnnotateJs_StartAnnotatorButtonDiv";
+    startAnnotatorButtonDiv.style.position = "fixed";
+    startAnnotatorButtonDiv.style.bottom = "0px";
+    startAnnotatorButtonDiv.style.right = "50%";
+    startAnnotatorButtonDiv.style.transform = "translate(50%)";
+    startAnnotatorButtonDiv.style.zIndex = "99999999";
+    document.body.appendChild(startAnnotatorButtonDiv);
 
-// ReactDOM.render(<AnnotateStartMenu />, tempppp);
-// ReactDOM.createPortal(<AnnotateStartMenu />, startAnnotatorButtonDiv);
-// ReactDOM.createPortal(<AnnotateStartMenu />, startAnnotatorButtonDiv);
-// ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App/>);
-ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App />);
+    ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App />);
+};
 
 const uniqueClassNameGen = uuidv4();
 {
@@ -239,23 +222,37 @@ const uniqueClassNameGen = uuidv4();
 const assignUniqueClasses = () => {
     let allElements = document.querySelectorAll("*");
     for (let i = 0; i < allElements.length; i++) {
-        allElements[i].classList.add(`AnnotateJs_${uniqueClassNameGen}_${i}`);
+        allElements[i].id = `AnnotateJs_${uniqueClassNameGen}_${i}`;
+        allElements[i].classList.add(`AnnotateJs_${uniqueClassNameGen}`);
     }
 };
 
 assignUniqueClasses();
+startRenderingReact();
 
-const startAnnonatation = () => {
-    // document.pointerEvents = "none";
-    // document.body.style.pointerEvents = "none";
+let windowOnMouseOverPrevFunc, windowOnMouseDownPrevFunc;
+
+export const startAnnotation = () => {
     document.body.style.userSelect = "none";
-    window.addEventListener("mouseover", function (e) {
-        updateMask(e.target);
-    });
+    // window.addEventListener("mouseover", function (e) {
+    //     updateMask(e.target);
+    // });
+    // window.addEventListener("mousedown", function (e) {
+    //     console.log(e.target);
+    // });
 
-    window.addEventListener("mousedown", function (e) {
+    windowOnMouseOverPrevFunc = window.onmouseover;
+    windowOnMouseDownPrevFunc = window.onmousedown;
+
+    window.onmouseover = function (e) {
+        if (e.target.id === "AnnotateJs_StartAnnotatorButtonDiv") {
+            return;
+        }
+        updateMask(e.target);
+    };
+    window.onmousedown = function (e) {
         console.log(e.target);
-    });
+    };
 
     function updateMask(target) {
         let elements = document.getElementsByClassName("highlight-wrap");
@@ -287,3 +284,15 @@ const startAnnonatation = () => {
         hObj.style.height = rect.height + "px";
     }
 };
+
+export const stopAnnotation = () => {
+    document.body.style.userSelect = "auto";
+    window.onmouseover = windowOnMouseOverPrevFunc;
+    window.onmousedown = windowOnMouseDownPrevFunc;
+    let elements = document.getElementsByClassName("highlight-wrap");
+    if (elements.length !== 0) {
+        elements[0].remove();
+    }
+}
+
+// startAnnonatation();

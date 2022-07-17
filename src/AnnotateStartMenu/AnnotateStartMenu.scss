@@ -84,11 +84,14 @@ $dark-brown: #542900;
         }
     }
     .clickedTheAnnotatorButton {
+        background: #ff1d19 !important;
+    }
+    .didNotClickedTheAnnotatorButton {
         background: rgba(19, 191, 17, 0.7) !important;
         -webkit-box-shadow: inset 0px 1px 1px $UIgreen !important;
         box-shadow: inset 0px 1px 1px $UIgreen !important;
     }
-    .AnnotateStartMenuMainDivHelp{
+    .AnnotateStartMenuMainDivHelp {
         margin: 0 1rem;
         width: 35px;
         height: 35px;

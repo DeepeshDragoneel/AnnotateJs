@@ -1,31 +1,39 @@
 import React, { useState } from "react";
 import ReactDom from "react-dom";
 import "./AnnotateStartMenu.scss";
-import { PlayArrowIcon } from "@mui/icons-material";
+import { toogleAnnotation } from "../contants";
+import { startAnnotation, stopAnnotation } from "../main.js";
 
 export const AnnotateStartMenu = () => {
     const [startAnnotateButtonClicked, setStartAnnotateButtonClicked] =
-        useState("");
+        useState("didNotClickedTheAnnotatorButton");
     const [startAnnotateButtonClicked2, setStartAnnotateButtonClicked2] =
         useState("");
 
     const handleClick = () => {
-        console.log("handleClick");
-        if (startAnnotateButtonClicked === "") {
+        // console.log("handleClick");
+        if (startAnnotateButtonClicked === "didNotClickedTheAnnotatorButton") {
             setStartAnnotateButtonClicked("clickedTheAnnotatorButton");
             setStartAnnotateButtonClicked2(
                 "clickedTheAnnotatorButtonTransition"
             );
+            // toogleAnnotation();
+            startAnnotation();
         } else {
-            setStartAnnotateButtonClicked("");
+            setStartAnnotateButtonClicked("didNotClickedTheAnnotatorButton");
             setStartAnnotateButtonClicked2("");
+            // toogleAnnotation();
+            stopAnnotation();
         }
     };
 
     return ReactDom.createPortal(
         <div className="AnnotateStartMenuMainDiv">
             <p className="AnnotateStartMenuMainDivPTag">
-                {startAnnotateButtonClicked === "" ? "Start" : "Stop"}{" "}
+                {startAnnotateButtonClicked ===
+                "didNotClickedTheAnnotatorButton"
+                    ? "Start "
+                    : "Stop "}
                 Annotation:
             </p>
             <div
