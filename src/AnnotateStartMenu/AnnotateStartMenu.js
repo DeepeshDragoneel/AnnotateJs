@@ -28,8 +28,8 @@ export const AnnotateStartMenu = () => {
     };
 
     return ReactDom.createPortal(
-        <div className="AnnotateStartMenuMainDiv">
-            <p className="AnnotateStartMenuMainDivPTag">
+        <div className="AnnotateStartMenuMainDiv AnnotateJs_Component">
+            <p className="AnnotateStartMenuMainDivPTag AnnotateJs_Component">
                 {startAnnotateButtonClicked ===
                 "didNotClickedTheAnnotatorButton"
                     ? "Start "
@@ -37,19 +37,25 @@ export const AnnotateStartMenu = () => {
                 Annotation:
             </p>
             <div
-                className={`switch-container switch-flat ${startAnnotateButtonClicked}`}
+                className={`switch-container AnnotateJs_Component switch-flat ${startAnnotateButtonClicked}`}
             >
                 <div
-                    className={`flat-container ${startAnnotateButtonClicked2}`}
+                    className={`flat-container AnnotateJs_Component ${startAnnotateButtonClicked2}`}
                     onClick={handleClick}
                 >
                     {/* <div className="flat flat-off">{PlayArrowIcon}</div> */}
-                    <div className={`flat flat-off `}>&#x25B6;</div>
-                    <div className={`flat flat-on`}>&#9634;</div>
+                    <div className={`AnnotateJs_Component flat flat-off `}>
+                        &#x25B6;
+                    </div>
+                    <div className={`AnnotateJs_Component flat flat-on`}>
+                        &#9634;
+                    </div>
                 </div>
             </div>
             <div>
-                <div className="AnnotateStartMenuMainDivHelp">&#x3F;</div>
+                <div className="AnnotateJs_Component AnnotateStartMenuMainDivHelp">
+                    &#x3F;
+                </div>
             </div>
         </div>,
         document.getElementById("AnnotateJs_StartAnnotatorButtonDiv")

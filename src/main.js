@@ -15,9 +15,16 @@ const startRenderingReact = () => {
     startAnnotatorButtonDiv.style.bottom = "0px";
     startAnnotatorButtonDiv.style.right = "50%";
     startAnnotatorButtonDiv.style.transform = "translate(50%)";
-    startAnnotatorButtonDiv.style.zIndex = "99999999";
+    startAnnotatorButtonDiv.style.zIndex = "99999990";
     document.body.appendChild(startAnnotatorButtonDiv);
-
+    const extraSpacingDiv = document.createElement("div");
+    // extraSpacingDiv.style.height = "1rem";
+    document.body.appendChild(extraSpacingDiv);
+    
+    const annotateJsCommentBoxDiv = document.createElement("div");
+    annotateJsCommentBoxDiv.id = "AnnotateJs_CommentBoxDiv";
+    startAnnotatorButtonDiv.style.zIndex = "99999991";
+    document.body.appendChild(annotateJsCommentBoxDiv);
     ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App />);
 };
 
@@ -240,10 +247,15 @@ export const startAnnotation = () => {
     // window.addEventListener("mousedown", function (e) {
     //     console.log(e.target);
     // });
-
     windowOnMouseOverPrevFunc = window.onmouseover;
     windowOnMouseDownPrevFunc = window.onmousedown;
-
+    const buttonAndLinks = document.querySelectorAll("a, button, li");
+    for (let i = 0; i < buttonAndLinks.length; i++) {
+        console.log(buttonAndLinks[i]);
+        buttonAndLinks[i].addEventListener('click', function(e) {
+            e.preventDefault();
+        })
+    }
     window.onmouseover = function (e) {
         if (e.target.id === "AnnotateJs_StartAnnotatorButtonDiv") {
             return;
@@ -251,6 +263,8 @@ export const startAnnotation = () => {
         updateMask(e.target);
     };
     window.onmousedown = function (e) {
+        // e.preventDefault();
+        if (e.target.classList.contains("AnnotateJs_Component")) return;
         console.log(e.target);
     };
 
@@ -293,6 +307,6 @@ export const stopAnnotation = () => {
     if (elements.length !== 0) {
         elements[0].remove();
     }
-}
+};
 
 // startAnnonatation();
