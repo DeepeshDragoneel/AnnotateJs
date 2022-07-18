@@ -20,10 +20,14 @@ const startRenderingReact = () => {
     const extraSpacingDiv = document.createElement("div");
     // extraSpacingDiv.style.height = "1rem";
     document.body.appendChild(extraSpacingDiv);
-    
+
     const annotateJsCommentBoxDiv = document.createElement("div");
     annotateJsCommentBoxDiv.id = "AnnotateJs_CommentBoxDiv";
-    startAnnotatorButtonDiv.style.zIndex = "99999991";
+    annotateJsCommentBoxDiv.style.position = "absolute";
+    annotateJsCommentBoxDiv.style.display = "none";
+    annotateJsCommentBoxDiv.style.zIndex = "99999991";
+    annotateJsCommentBoxDiv.style.backgroundColor = "white";
+    // annotateJsCommentBoxDiv.style.display = "none";
     document.body.appendChild(annotateJsCommentBoxDiv);
     ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App />);
 };
@@ -239,6 +243,14 @@ startRenderingReact();
 
 let windowOnMouseOverPrevFunc, windowOnMouseDownPrevFunc;
 
+export const closeAnnotateJsCommentBox = () => {
+    console.log("closeAnnotateJsCommentBox");
+    if (document.querySelector("#AnnotateJs_CommentBoxDiv") !== null) {
+        document.querySelector("#AnnotateJs_CommentBoxDiv").style.display =
+            "none";
+    }
+};
+
 export const startAnnotation = () => {
     document.body.style.userSelect = "none";
     // window.addEventListener("mouseover", function (e) {
@@ -251,21 +263,51 @@ export const startAnnotation = () => {
     windowOnMouseDownPrevFunc = window.onmousedown;
     const buttonAndLinks = document.querySelectorAll("a, button, li");
     for (let i = 0; i < buttonAndLinks.length; i++) {
-        console.log(buttonAndLinks[i]);
-        buttonAndLinks[i].addEventListener('click', function(e) {
+        // console.log(buttonAndLinks[i]);
+        buttonAndLinks[i].addEventListener("click", function (e) {
             e.preventDefault();
-        })
+        });
     }
     window.onmouseover = function (e) {
-        if (e.target.id === "AnnotateJs_StartAnnotatorButtonDiv") {
+        if (e.target.id === "AnnotateJs_Container") {
             return;
         }
         updateMask(e.target);
     };
+
+    document.onclick = function (e) {
+        if (e.target.classList.contains("AnnotateJs_Component")) return;
+
+        const annotateJsCommentBoxDiv = document.getElementById(
+            "AnnotateJs_CommentBoxDiv"
+        );
+        annotateJsCommentBoxDiv.style.display = "block";
+        annotateJsCommentBoxDiv.style.transform = "translate(-50%, -50%)";
+        let xPos = e.pageY;
+        let yPos = e.pageX;
+        if (yPos + 250 > window.innerWidth) {
+            yPos -= 150;
+        }
+        if (yPos - 250 < 0) {
+            yPos += 250;
+        }
+        console.log(xPos + 100, xPos - 200);
+        if (e.offsetY + 200 > window.innerHeight) {
+            xPos -= 100;
+        }
+        if (e.offsetY - 100 <= 0) {
+            xPos += 100;
+        }
+        annotateJsCommentBoxDiv.style.top = xPos + "px";
+        annotateJsCommentBoxDiv.style.left = yPos + "px";
+        // console.log(e.target);
+        console.log(e.offsetY, window.innerHeight);
+        // console.log(e.target.id);
+    };
+
     window.onmousedown = function (e) {
         // e.preventDefault();
         if (e.target.classList.contains("AnnotateJs_Component")) return;
-        console.log(e.target);
     };
 
     function updateMask(target) {
@@ -283,7 +325,7 @@ export const startAnnotation = () => {
             // hObj.style.pointerEvents = "auto";
             hObj.style.pointerEvents = "none";
             hObj.onmousedown = function (e) {
-                console.log("mousedown");
+                // console.log("mousedown");
             };
             hObj.style.zIndex = "9999999";
             hObj.style.boxSizing = "border-box";
