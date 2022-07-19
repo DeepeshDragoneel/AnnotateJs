@@ -11,24 +11,71 @@ const createSideBarForComments = () => {
     const annotateJsCommentsSideBarDiv = document.createElement("div");
     annotateJsCommentsSideBarDiv.id = "AnnotateJs_CommentsSideBarDiv";
     annotateJsCommentsSideBarDiv.className = "AnnotateJs_Component";
+    annotateJsCommentsSideBarDiv.classList.add("showSideBoxAnnotateJs");
     annotateJsCommentsSideBarDiv.style.position = "fixed";
     annotateJsCommentsSideBarDiv.style.top = "0px";
-    annotateJsCommentsSideBarDiv.style.right = "0px";
-    if(window.innerWidth < 500) {
+    annotateJsCommentsSideBarDiv.style.right = "-100%";
+    annotateJsCommentsSideBarDiv.style.overflowY = "scroll";
+    // annotateJsCommentsSideBarDiv.style.transform = "translateX(100%)";
+    annotateJsCommentsSideBarDiv.style.transition =
+        "transform 0.5s ease-in-out";
+    annotateJsCommentsSideBarDiv.style.zIndex = "99999992";
+    annotateJsCommentsSideBarDiv.style.transition =
+        "1s ease-in-out";
+    // let style = document.createElement("style");
+    // style.type = "text/css";
+    // let keyFrames =
+    //     "\
+    // @-webkit-keyframes showSideBar {\
+    //     0% {\
+    //         -webkit-transform: translateX(0%);\
+    //         -webkit-display: none;\
+    //     }\
+    //     100% {\
+    //         -webkit-transform: translateX(100%);\
+    //         -webkit-display: block;\
+    //     }\
+    // }\
+    // @-moz-keyframes hideSideBar {\
+    //     0% {\
+    //         -webkit-transform: translateX(100%);\
+    //         -webkit-display: block;\
+    //     }\
+    //     100% {\
+    //         -webkit-transform: translateX(0%);\
+    //         -webkit-display: none;\
+    //     }\
+    // }";
+    // style.innerHTML = keyFrames;
+    // document.getElementsByTagName("head")[0].appendChild(style);
+
+    if (window.innerWidth < 500) {
         annotateJsCommentsSideBarDiv.style.width = "100%";
-    }
-    else if(window.innerWidth < 1000) {
+    } else if (window.innerWidth < 1000) {
         annotateJsCommentsSideBarDiv.style.width = "40%";
-    }
-    else if(window.innerWidth < 800) {
+    } else if (window.innerWidth < 800) {
         annotateJsCommentsSideBarDiv.style.width = "50%";
-    }
-    else {
+    } else {
         annotateJsCommentsSideBarDiv.style.width = "25%";
     }
     annotateJsCommentsSideBarDiv.style.height = "100vh";
     annotateJsCommentsSideBarDiv.style.backgroundColor = "white";
-    annotateJsCommentsSideBarDiv.style.zIndex = "99999991";
+    // var css =
+    //     ".showSideBoxAnnotateJs {   opacity:1;  visibility: visible;  transition: all 0.25s ease; transform: translateX(0); animation: fadeInRight .25s ease forwards;}\
+    //     @-webkit-keyframes fadeInRight {\
+    //     0% {\
+    //         opacity: 0;\
+    //         left: 20%;\
+    //     }\
+    //     100% {\
+    //         opacity: 1;\
+    //         left: 0;\
+    //     }\
+    // }";
+
+    // document.head.appendChild(document.createElement("style")).innerHTML = css;
+    // document.getElementsByTagName("head")[0].appendChild(htmlDiv.childNodes[1]);
+    // annotateJsCommentsSideBarDiv.style.zIndex = "99999991";
     document.body.appendChild(annotateJsCommentsSideBarDiv);
 };
 
@@ -259,8 +306,7 @@ const uniqueClassNameGen = uuidv4();
 const assignUniqueClasses = () => {
     let allElements = document.querySelectorAll("*");
     for (let i = 0; i < allElements.length; i++) {
-        allElements[i].id = `AnnotateJs_${uniqueClassNameGen}_${i}`;
-        allElements[i].classList.add(`AnnotateJs_${uniqueClassNameGen}`);
+        allElements[i].classList.add(`AnnotateJs_${uniqueClassNameGen}_${i}`);
     }
 };
 
@@ -433,6 +479,21 @@ export const stopAnnotation = () => {
     let elements = document.getElementsByClassName("highlight-wrap");
     if (elements.length !== 0) {
         elements[0].remove();
+    }
+};
+
+export const toogleCommentSideBar = () => {
+    console.log("toogleCommentSideBar");
+    const annotateJsCommentBoxDiv = document.getElementById(
+        "AnnotateJs_CommentsSideBarDiv"
+    );
+    console.log(annotateJsCommentBoxDiv);
+    if (annotateJsCommentBoxDiv.classList.contains("showSideBoxAnnotateJs")) {
+        annotateJsCommentBoxDiv.classList.remove("showSideBoxAnnotateJs");
+        annotateJsCommentBoxDiv.style.right = "0";
+    } else {
+        annotateJsCommentBoxDiv.classList.add("showSideBoxAnnotateJs");
+        annotateJsCommentBoxDiv.style.right = "-100%";
     }
 };
 

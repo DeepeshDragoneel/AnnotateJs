@@ -92,7 +92,7 @@ $dark-brown: #542900;
         box-shadow: inset 0px 1px 1px $UIgreen !important;
     }
     .AnnotateStartMenuMainDivHelp {
-        margin: 0 1rem;
+        margin: 0 0.5rem 0 0.5rem;
         width: 35px;
         height: 35px;
         border-radius: 50%;
@@ -113,5 +113,14 @@ $dark-brown: #542900;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         -webkit-animation: hue 60s infinite linear;
+    }
+    .AnnotateStartMenuMainDivIssues {
+        margin: 0 0.5rem 0 1rem;
+        color: linear-gradient(#ff9191 10%, #e9c06d 100%) !important;
+        background-image: -webkit-linear-gradient(
+            90deg,
+            #ff9191 0%,
+            #e9c06d 80%
+        ) !important;
     }
 }

@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import ReactDom from "react-dom";
 import "./AnnotateStartMenu.scss";
 import { toogleAnnotation } from "../contants";
-import { startAnnotation, stopAnnotation } from "../main.js";
+import {
+    startAnnotation,
+    stopAnnotation,
+    toogleCommentSideBar,
+} from "../main.js";
+import BugReportIcon from "@mui/icons-material/BugReport";
 
 export const AnnotateStartMenu = () => {
     const [startAnnotateButtonClicked, setStartAnnotateButtonClicked] =
@@ -44,16 +49,41 @@ export const AnnotateStartMenu = () => {
                     onClick={handleClick}
                 >
                     {/* <div className="flat flat-off">{PlayArrowIcon}</div> */}
-                    <div className={`AnnotateJs_Component flat flat-off `} title="Start">
+                    <div
+                        className={`AnnotateJs_Component flat flat-off `}
+                        title="Start"
+                    >
                         &#x25B6;
                     </div>
-                    <div className={`AnnotateJs_Component flat flat-on`} title="Stop">
+                    <div
+                        className={`AnnotateJs_Component flat flat-on`}
+                        title="Stop"
+                    >
                         &#9634;
                     </div>
                 </div>
             </div>
             <div>
-                <div className="AnnotateJs_Component AnnotateStartMenuMainDivHelp" title="Help">
+                <div
+                    className="AnnotateJs_Component AnnotateStartMenuMainDivHelp AnnotateStartMenuMainDivIssues"
+                    title="Display Issues"
+                    onClick={() => {
+                        toogleCommentSideBar();
+                    }}
+                >
+                    <BugReportIcon
+                        className="AnnotateJs_Component"
+                        style={{
+                            color: "#ff9191",
+                        }}
+                    />
+                </div>
+            </div>
+            <div>
+                <div
+                    className="AnnotateJs_Component AnnotateStartMenuMainDivHelp"
+                    title="Help"
+                >
                     &#x3F;
                 </div>
             </div>
