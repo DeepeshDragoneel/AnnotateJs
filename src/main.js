@@ -7,6 +7,31 @@ import { getStartAnnotation } from "./contants";
 
 console.log("AnnotatorJs Loaded! ✌🏻");
 
+const createSideBarForComments = () => {
+    const annotateJsCommentsSideBarDiv = document.createElement("div");
+    annotateJsCommentsSideBarDiv.id = "AnnotateJs_CommentsSideBarDiv";
+    annotateJsCommentsSideBarDiv.className = "AnnotateJs_Component";
+    annotateJsCommentsSideBarDiv.style.position = "fixed";
+    annotateJsCommentsSideBarDiv.style.top = "0px";
+    annotateJsCommentsSideBarDiv.style.right = "0px";
+    if(window.innerWidth < 500) {
+        annotateJsCommentsSideBarDiv.style.width = "100%";
+    }
+    else if(window.innerWidth < 1000) {
+        annotateJsCommentsSideBarDiv.style.width = "40%";
+    }
+    else if(window.innerWidth < 800) {
+        annotateJsCommentsSideBarDiv.style.width = "50%";
+    }
+    else {
+        annotateJsCommentsSideBarDiv.style.width = "25%";
+    }
+    annotateJsCommentsSideBarDiv.style.height = "100vh";
+    annotateJsCommentsSideBarDiv.style.backgroundColor = "white";
+    annotateJsCommentsSideBarDiv.style.zIndex = "99999991";
+    document.body.appendChild(annotateJsCommentsSideBarDiv);
+};
+
 const startRenderingReact = () => {
     const startAnnotatorButtonDiv = document.createElement("div");
     // startAnnotatorButtonDiv.className = `AnnotateJs_StartAnnotatorButtonDiv_${uniqueClassNameGen}`;
@@ -25,10 +50,11 @@ const startRenderingReact = () => {
     annotateJsCommentBoxDiv.id = "AnnotateJs_CommentBoxDiv";
     annotateJsCommentBoxDiv.style.position = "absolute";
     annotateJsCommentBoxDiv.style.display = "none";
-    annotateJsCommentBoxDiv.style.zIndex = "99999991";
+    annotateJsCommentBoxDiv.style.zIndex = "99999992";
     annotateJsCommentBoxDiv.style.backgroundColor = "white";
     // annotateJsCommentBoxDiv.style.display = "none";
     document.body.appendChild(annotateJsCommentBoxDiv);
+    createSideBarForComments();
     ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App />);
 };
 
@@ -244,12 +270,60 @@ startRenderingReact();
 let windowOnMouseOverPrevFunc, windowOnMouseDownPrevFunc;
 
 export const closeAnnotateJsCommentBox = () => {
-    console.log("closeAnnotateJsCommentBox");
+    // console.log("closeAnnotateJsCommentBox");
     if (document.querySelector("#AnnotateJs_CommentBoxDiv") !== null) {
         document.querySelector("#AnnotateJs_CommentBoxDiv").style.display =
             "none";
     }
+    const backDropDisplayDiv = document.getElementById(
+        "AnnotateJs_BackDropDisplayDiv"
+    );
+    backDropDisplayDiv.remove();
+    enableScroll();
 };
+
+var keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
+
+function preventDefault(e) {
+    e.preventDefault();
+}
+
+function preventDefaultForScrollKeys(e) {
+    if (keys[e.keyCode]) {
+        preventDefault(e);
+        return false;
+    }
+}
+var supportsPassive = false;
+try {
+    window.addEventListener(
+        "test",
+        null,
+        Object.defineProperty({}, "passive", {
+            get: function () {
+                supportsPassive = true;
+            },
+        })
+    );
+} catch (e) {}
+
+var wheelOpt = supportsPassive ? { passive: false } : false;
+var wheelEvent =
+    "onwheel" in document.createElement("div") ? "wheel" : "mousewheel";
+
+function disableScroll() {
+    window.addEventListener("DOMMouseScroll", preventDefault, false); // older FF
+    window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
+    window.addEventListener("touchmove", preventDefault, wheelOpt); // mobile
+    window.addEventListener("keydown", preventDefaultForScrollKeys, false);
+}
+
+function enableScroll() {
+    window.removeEventListener("DOMMouseScroll", preventDefault, false);
+    window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
+    window.removeEventListener("touchmove", preventDefault, wheelOpt);
+    window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
+}
 
 export const startAnnotation = () => {
     document.body.style.userSelect = "none";
@@ -272,12 +346,12 @@ export const startAnnotation = () => {
         if (e.target.id === "AnnotateJs_Container") {
             return;
         }
+        if (e.target.classList.contains("AnnotateJs_Component")) return;
         updateMask(e.target);
     };
 
     document.onclick = function (e) {
         if (e.target.classList.contains("AnnotateJs_Component")) return;
-
         const annotateJsCommentBoxDiv = document.getElementById(
             "AnnotateJs_CommentBoxDiv"
         );
@@ -291,7 +365,6 @@ export const startAnnotation = () => {
         if (yPos - 250 < 0) {
             yPos += 250;
         }
-        console.log(xPos + 100, xPos - 200);
         if (e.offsetY + 200 > window.innerHeight) {
             xPos -= 100;
         }
@@ -301,8 +374,20 @@ export const startAnnotation = () => {
         annotateJsCommentBoxDiv.style.top = xPos + "px";
         annotateJsCommentBoxDiv.style.left = yPos + "px";
         // console.log(e.target);
-        console.log(e.offsetY, window.innerHeight);
+        // console.log(e.offsetY, window.innerHeight);
         // console.log(e.target.id);
+        const backDropDisplayDiv = document.createElement("div");
+        backDropDisplayDiv.id = "AnnotateJs_BackDropDisplayDiv";
+        backDropDisplayDiv.className = "AnnotateJs_Component";
+        backDropDisplayDiv.style.position = "fixed";
+        backDropDisplayDiv.style.top = "0";
+        backDropDisplayDiv.style.left = "0";
+        backDropDisplayDiv.style.width = "100vw";
+        backDropDisplayDiv.style.height = "100vh";
+        backDropDisplayDiv.style.backgroundColor = "rgba(0,0,0,0.3)";
+        backDropDisplayDiv.style.zIndex = "99999910";
+        document.body.appendChild(backDropDisplayDiv);
+        disableScroll();
     };
 
     window.onmousedown = function (e) {

@@ -31,12 +31,13 @@ export const CommentBox = () => {
                 onChange={(e) => {
                     setComment(e.target.value);
                 }}
+                placeholder="Enter your comment here..."
             ></textarea>
             <div className="AnnotateJs_Component commentBoxButtonDiv">
                 <button
                     className="AnnotateJs_Component commentBoxSubmitButton"
                     onClick={() => {
-                        console.log("Comment: ", Comment);
+                        // console.log("Comment: ", Comment);
                         setComment("");
                     }}
                 >
@@ -46,7 +47,7 @@ export const CommentBox = () => {
                     className="AnnotateJs_Component commentBoxCancelButton"
                     onClick={() => {
                         setComment("");
-                        console.log("Comment: ", Comment);
+                        // console.log("Comment: ", Comment);
                         closeAnnotateJsCommentBox();
                     }}
                 >

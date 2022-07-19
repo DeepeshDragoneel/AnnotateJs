@@ -44,16 +44,16 @@ export const AnnotateStartMenu = () => {
                     onClick={handleClick}
                 >
                     {/* <div className="flat flat-off">{PlayArrowIcon}</div> */}
-                    <div className={`AnnotateJs_Component flat flat-off `}>
+                    <div className={`AnnotateJs_Component flat flat-off `} title="Start">
                         &#x25B6;
                     </div>
-                    <div className={`AnnotateJs_Component flat flat-on`}>
+                    <div className={`AnnotateJs_Component flat flat-on`} title="Stop">
                         &#9634;
                     </div>
                 </div>
             </div>
             <div>
-                <div className="AnnotateJs_Component AnnotateStartMenuMainDivHelp">
+                <div className="AnnotateJs_Component AnnotateStartMenuMainDivHelp" title="Help">
                     &#x3F;
                 </div>
             </div>
