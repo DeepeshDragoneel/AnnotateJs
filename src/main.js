@@ -19,9 +19,24 @@ const createSideBarForComments = () => {
     // annotateJsCommentsSideBarDiv.style.transform = "translateX(100%)";
     annotateJsCommentsSideBarDiv.style.transition =
         "transform 0.5s ease-in-out";
-    annotateJsCommentsSideBarDiv.style.zIndex = "99999992";
-    annotateJsCommentsSideBarDiv.style.transition =
-        "1s ease-in-out";
+    annotateJsCommentsSideBarDiv.style.zIndex = "99999995";
+    annotateJsCommentsSideBarDiv.style.transition = "1s ease-in-out";
+    annotateJsCommentsSideBarDiv.style.boxShadow = "0px 0px 10px #000000";
+    const issesSideBarBackDrop = document.createElement("div");
+    issesSideBarBackDrop.id = "AnnotateJs_CommentsSideBarBackDrop";
+    issesSideBarBackDrop.className = "AnnotateJs_Component";
+    issesSideBarBackDrop.style.position = "fixed";
+    issesSideBarBackDrop.style.top = "0px";
+    issesSideBarBackDrop.style.right = "0px";
+    issesSideBarBackDrop.style.width = "100vw";
+    issesSideBarBackDrop.style.height = "100vh";
+    issesSideBarBackDrop.style.backgroundColor = "rgba(0,0,0,0.5)";
+    issesSideBarBackDrop.style.zIndex = "99999994";
+    issesSideBarBackDrop.style.display = "none";
+    issesSideBarBackDrop.onclick = () => {
+        toogleCommentSideBar();
+    };
+    document.body.appendChild(issesSideBarBackDrop);
     // let style = document.createElement("style");
     // style.type = "text/css";
     // let keyFrames =
@@ -483,17 +498,22 @@ export const stopAnnotation = () => {
 };
 
 export const toogleCommentSideBar = () => {
-    console.log("toogleCommentSideBar");
+    // console.log("toogleCommentSideBar");
     const annotateJsCommentBoxDiv = document.getElementById(
         "AnnotateJs_CommentsSideBarDiv"
     );
-    console.log(annotateJsCommentBoxDiv);
+    const annotateJsCommentsSideBarBackDropDiv = document.getElementById(
+        "AnnotateJs_CommentsSideBarBackDrop"
+    );
+    // console.log(annotateJsCommentBoxDiv);
     if (annotateJsCommentBoxDiv.classList.contains("showSideBoxAnnotateJs")) {
         annotateJsCommentBoxDiv.classList.remove("showSideBoxAnnotateJs");
         annotateJsCommentBoxDiv.style.right = "0";
+        annotateJsCommentsSideBarBackDropDiv.style.display = "block";
     } else {
         annotateJsCommentBoxDiv.classList.add("showSideBoxAnnotateJs");
         annotateJsCommentBoxDiv.style.right = "-100%";
+        annotateJsCommentsSideBarBackDropDiv.style.display = "none";
     }
 };
 

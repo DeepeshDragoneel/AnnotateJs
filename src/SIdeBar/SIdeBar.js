@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./SIdeBar.scss";
 import CloseIcon from "@mui/icons-material/Close";
@@ -7,16 +7,63 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import * as jsonData from "./tempSideBarData.json";
+import { toogleCommentSideBar } from "../main";
 const data = jsonData.data;
 
 export const SIdeBar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [commentsData, setcommentsData] = useState([]);
+
+    useEffect(() => {
+        setcommentsData(data);
+        // for(let i = 0; i < commentsData.length; i++){
+        //     commentsData[i].createdAt = formatTheDate(commentsData[i].createdAt);
+        // }
+        setcommentsData((prevState) => {
+            return prevState.map((comment) => {
+                // console.log(comment);
+                console.log(formatTheDate(comment.createdAt));
+                const temp = {
+                    ...comment,
+                    createdAt: formatTheDate(comment.createdAt),
+                };
+                console.log(temp);
+                return temp;
+            });
+        });
+    }, []);
+
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+    const formatTheDate = (time) => {
+        var date = new Date(
+                (time || "").replace(/-/g, "/").replace(/[TZ]/g, " ")
+            ),
+            diff = (new Date().getTime() - date.getTime()) / 1000,
+            day_diff = Math.floor(diff / 86400);
+
+        // console.log("res: ", date, day_diff);
+        if (isNaN(day_diff) || day_diff < 0) return;
+
+        const res =
+            (day_diff == 0 &&
+                ((diff < 60 && "just now") ||
+                    (diff < 120 && "1 minute ago") ||
+                    (diff < 3600 && Math.floor(diff / 60) + " minutes ago") ||
+                    (diff < 7200 && "1 hour ago") ||
+                    (diff < 86400 &&
+                        Math.floor(diff / 3600) + " hours ago"))) ||
+            (day_diff == 1 && "Yesterday") ||
+            (day_diff < 7 && day_diff + " days ago") ||
+            (day_diff < 31 && Math.ceil(day_diff / 7) + " weeks ago") ||
+            (day_diff < 60 && Math.ceil(day_diff / 31) + " months ago") ||
+            Math.ceil(day_diff / 365) + " years ago";
+        return res;
     };
     return ReactDOM.createPortal(
         <div className="AnnotateJs_Component annotateJsSideBarMainDiv">
@@ -70,6 +117,7 @@ export const SIdeBar = () => {
                             padding: "0px",
                             width: "1rem !important",
                         }}
+                        onClick={toogleCommentSideBar}
                     >
                         <CloseIcon
                             className="AnnotateJs_Component"
@@ -78,30 +126,42 @@ export const SIdeBar = () => {
                     </Button>
                 </div>
             </div>
+            <hr className="AnnotateJs_Component" style={{ color: "black" }} />
             <div className="AnnotateJs_Component annotateJsSideBarBody">
-                {data.map((item) => (
-                    <div key={item.id} className="AnnotateJs_Component annotateJsSideBarBodyDiv">
-                        <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
-                            <img
-                                className="AnnotateJs_Component annotateJsSideBarBodyDivProfileImg"
-                                src="https://material-ui.com/static/images/avatar/1.jpg"
-                            />
-                            <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfileName">
-                                <p className="AnnotateJs_Component annotateJsSideBarBodyDivProfileNameP">
-                                    {item.name}
-                                </p>
-                                <p className="AnnotateJs_Component annotateJsSideBarBodyDivTime">
-                                    {item.createdAt}
+                {commentsData !== null &&
+                commentsData !== undefined &&
+                commentsData.length > 0 ? (
+                    commentsData.map((item) => (
+                        <div
+                            key={item.id}
+                            className="AnnotateJs_Component annotateJsSideBarBodyDiv"
+                        >
+                            <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
+                                <img
+                                    className="AnnotateJs_Component annotateJsSideBarBodyDivProfileImg"
+                                    src="https://material-ui.com/static/images/avatar/1.jpg"
+                                />
+                                <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfileName">
+                                    <p className="AnnotateJs_Component annotateJsSideBarBodyDivProfileNameP">
+                                        {item.name}
+                                    </p>
+                                    <p className="AnnotateJs_Component annotateJsSideBarBodyDivTime">
+                                        {item.createdAt}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="AnnotateJs_Component annotateJsSideBarBodyDivComment">
+                                <p className="AnnotateJs_Component annotateJsSideBarBodyDivCommentP">
+                                    {item.comment}
                                 </p>
                             </div>
                         </div>
-                        <div className="AnnotateJs_Component annotateJsSideBarBodyDivComment">
-                            <p className="AnnotateJs_Component annotateJsSideBarBodyDivCommentP">
-                                {item.comment}
-                            </p>
-                        </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <p className="AnnotateJs_Component noResultsFoundPage">
+                        No Issues Found
+                    </p>
+                )}
             </div>
         </div>,
         document.querySelector("#AnnotateJs_CommentsSideBarDiv")

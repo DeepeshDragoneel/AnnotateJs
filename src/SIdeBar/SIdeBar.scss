@@ -39,26 +39,30 @@
             }
         }
     }
-    .annotateJsSideBarBody{
+    .annotateJsSideBarBody {
         overflow-y: scroll;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        .annotateJsSideBarBodyDiv{
+        .annotateJsSideBarBodyDiv {
+            padding: 0.5rem;
+            width: 100%;
+            background-color: #ebebeb;
+            margin: 0.5rem !important;
             margin: 1rem 0;
-            .annotateJsSideBarBodyDivProfile{
+            .annotateJsSideBarBodyDivProfile {
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
-                .annotateJsSideBarBodyDivProfileImg{
+                .annotateJsSideBarBodyDivProfileImg {
                     width: 2rem;
                     height: 2rem;
                     border-radius: 50%;
                     margin: 0.5rem;
                     margin-left: 0;
                 }
-                .annotateJsSideBarBodyDivProfileName{
+                .annotateJsSideBarBodyDivProfileName {
                     font-size: 0.8rem;
                     font-weight: normal;
                     margin: 0;
@@ -68,21 +72,21 @@
                     justify-content: center;
                     align-items: flex-start;
                     flex-direction: column;
-                    .annotateJsSideBarBodyDivProfileNameP{
+                    .annotateJsSideBarBodyDivProfileNameP {
                         font-weight: 500;
                         margin: 0;
                     }
-                    .annotateJsSideBarBodyDivTime{
+                    .annotateJsSideBarBodyDivTime {
                         color: grey;
                         margin: 0;
                     }
                 }
             }
-            .annotateJsSideBarBodyDivComment{
+            .annotateJsSideBarBodyDivComment {
                 display: flex;
                 justify-content: flex-start;
                 align-items: flex-start;
-                .annotateJsSideBarBodyDivCommentP{
+                .annotateJsSideBarBodyDivCommentP {
                     font-size: 0.9rem;
                     font-weight: normal;
                     margin: 0;
@@ -92,4 +96,11 @@
             }
         }
     }
+}
+
+.noIssuesFoundAnnotateJs{
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
 }
