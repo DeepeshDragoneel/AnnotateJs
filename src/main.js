@@ -7,6 +7,15 @@ import { getStartAnnotation } from "./contants";
 
 console.log("AnnotatorJs Loaded! ✌🏻");
 
+let this_js_script = $("script[src*=bundle]");
+var my_var_1 = this_js_script.attr("allowed-users");
+console.log(my_var_1);
+if (typeof my_var_1 === "undefined") {
+    var my_var_1 = "some_default_value";
+}
+alert(my_var_1); // to view the variable value
+
+
 const createSideBarForComments = () => {
     const annotateJsCommentsSideBarDiv = document.createElement("div");
     annotateJsCommentsSideBarDiv.id = "AnnotateJs_CommentsSideBarDiv";

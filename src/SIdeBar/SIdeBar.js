@@ -22,12 +22,12 @@ export const SIdeBar = () => {
         setcommentsData((prevState) => {
             return prevState.map((comment) => {
                 // console.log(comment);
-                console.log(formatTheDate(comment.createdAt));
+                // console.log(formatTheDate(comment.createdAt));
                 const temp = {
                     ...comment,
                     createdAt: formatTheDate(comment.createdAt),
                 };
-                console.log(temp);
+                // console.log(temp);
                 return temp;
             });
         });
