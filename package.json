@@ -31,6 +31,7 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.9.0",
     "@mui/styled-engine-sc": "^5.8.0",
+    "axios": "^0.27.2",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",

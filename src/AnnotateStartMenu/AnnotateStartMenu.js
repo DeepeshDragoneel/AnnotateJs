@@ -63,7 +63,7 @@ export const AnnotateStartMenu = () => {
                     </div>
                 </div>
             </div>
-            <div>
+            <div className="AnnotateJs_Component">
                 <div
                     className="AnnotateJs_Component AnnotateStartMenuMainDivHelp AnnotateStartMenuMainDivIssues"
                     title="Display Issues"

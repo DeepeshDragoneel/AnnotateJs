@@ -3,18 +3,30 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { AnnotateStartMenu } from "./AnnotateStartMenu/AnnotateStartMenu";
 import { App } from "./App";
+import axios from "axios";
 import { getStartAnnotation } from "./contants";
 
-console.log("AnnotatorJs Loaded! ✌🏻");
+let itemBeingCommented;
 
-let this_js_script = $("script[src*=bundle]");
-var my_var_1 = this_js_script.attr("allowed-users");
-console.log(my_var_1);
-if (typeof my_var_1 === "undefined") {
-    var my_var_1 = "some_default_value";
-}
-alert(my_var_1); // to view the variable value
-
+const initializeAnnotateJs = () => {
+    let this_js_script = $("script[src*=bundle]");
+    var my_var_1 = this_js_script.attr("allowed-users");
+    if (typeof my_var_1 !== "undefined") {
+        let allowedUsers = my_var_1.split(",");
+        axios({
+            method: "post",
+            url: "http://localhost:8000/addUsers",
+            data: {
+                allowedUsers: allowedUsers,
+                domain: window.location.hostname,
+            },
+        });
+        console.log(allowedUsers);
+    }
+    itemBeingCommented = undefined;
+    console.log(window.location.hostname);
+    console.log("AnnotatorJs Loaded! ✌🏻");
+};
 
 const createSideBarForComments = () => {
     const annotateJsCommentsSideBarDiv = document.createElement("div");
@@ -105,7 +117,6 @@ const createSideBarForComments = () => {
 
 const startRenderingReact = () => {
     const startAnnotatorButtonDiv = document.createElement("div");
-    // startAnnotatorButtonDiv.className = `AnnotateJs_StartAnnotatorButtonDiv_${uniqueClassNameGen}`;
     startAnnotatorButtonDiv.id = "AnnotateJs_StartAnnotatorButtonDiv";
     startAnnotatorButtonDiv.style.position = "fixed";
     startAnnotatorButtonDiv.style.bottom = "0px";
@@ -330,7 +341,7 @@ const uniqueClassNameGen = uuidv4();
 const assignUniqueClasses = () => {
     let allElements = document.querySelectorAll("*");
     for (let i = 0; i < allElements.length; i++) {
-        allElements[i].classList.add(`AnnotateJs_${uniqueClassNameGen}_${i}`);
+        allElements[i].classList.add(`AnnotateJs_${window.location.href}_${i}`);
     }
 };
 
@@ -338,6 +349,11 @@ assignUniqueClasses();
 startRenderingReact();
 
 let windowOnMouseOverPrevFunc, windowOnMouseDownPrevFunc;
+
+export const postComment = (comment) => {
+    console.log(itemBeingCommented, comment);
+    closeAnnotateJsCommentBox();
+};
 
 export const closeAnnotateJsCommentBox = () => {
     // console.log("closeAnnotateJsCommentBox");
@@ -409,7 +425,12 @@ export const startAnnotation = () => {
     for (let i = 0; i < buttonAndLinks.length; i++) {
         // console.log(buttonAndLinks[i]);
         buttonAndLinks[i].addEventListener("click", function (e) {
+            if (e.target.id === "AnnotateJs_Container") {
+                return;
+            }
+            if (e.target.classList.contains("AnnotateJs_Component")) return;
             e.preventDefault();
+            console.log(e.target.classList);
         });
     }
     window.onmouseover = function (e) {
@@ -422,6 +443,9 @@ export const startAnnotation = () => {
 
     document.onclick = function (e) {
         if (e.target.classList.contains("AnnotateJs_Component")) return;
+        itemBeingCommented = e.target.className.split(" ").find((c) => {
+            return c.includes("AnnotateJs_");
+        });
         const annotateJsCommentBoxDiv = document.getElementById(
             "AnnotateJs_CommentBoxDiv"
         );
@@ -456,6 +480,10 @@ export const startAnnotation = () => {
         backDropDisplayDiv.style.height = "100vh";
         backDropDisplayDiv.style.backgroundColor = "rgba(0,0,0,0.3)";
         backDropDisplayDiv.style.zIndex = "99999910";
+        backDropDisplayDiv.onclick = function (e) {
+            e.stopPropagation();
+            closeAnnotateJsCommentBox();
+        };
         document.body.appendChild(backDropDisplayDiv);
         disableScroll();
     };
@@ -527,3 +555,4 @@ export const toogleCommentSideBar = () => {
 };
 
 // startAnnonatation();
+initializeAnnotateJs();

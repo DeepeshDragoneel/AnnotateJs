@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDom from "react-dom";
 import Avatar from "@mui/material/Avatar";
 import "./CommentBox.scss";
-import { closeAnnotateJsCommentBox } from "../main";
+import { closeAnnotateJsCommentBox, postComment } from "../main";
 
 export const CommentBox = () => {
     const [Comment, setComment] = useState("");
@@ -38,6 +38,7 @@ export const CommentBox = () => {
                     className="AnnotateJs_Component commentBoxSubmitButton"
                     onClick={() => {
                         // console.log("Comment: ", Comment);
+                        postComment(Comment);
                         setComment("");
                     }}
                 >
