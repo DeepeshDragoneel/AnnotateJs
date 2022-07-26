@@ -8,23 +8,54 @@ import { getStartAnnotation } from "./contants";
 
 let itemBeingCommented;
 
-const initializeAnnotateJs = () => {
-    let this_js_script = $("script[src*=bundle]");
-    var my_var_1 = this_js_script.attr("allowed-users");
-    if (typeof my_var_1 !== "undefined") {
-        let allowedUsers = my_var_1.split(",");
-        axios({
+window.onload = async() => {
+    //checking wether the user is logged in
+    let loggedIn = true;
+    if(localStorage.getItem("AnnotateJsUserToken") === undefined || localStorage.getItem("AnnotateJsUserToken") === null){
+        console.log("User is not logged in");
+        loggedIn = false;
+    }
+    else{
+        const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
+        const result = axios({
             method: "post",
-            url: "http://localhost:8000/addUsers",
+            url: "http://localhost:8000/checkUser",
             data: {
-                allowedUsers: allowedUsers,
-                domain: window.location.hostname,
+                AnnotateJsUserToken: AnnotateJsUserToken,
             },
         });
-        console.log(allowedUsers);
+        if(result.data.status === "success"){
+            console.log("User is logged in");
+        }
+        else{
+            loggedIn = false;
+            console.log("User is not logged in");
+        }
     }
+    if(!loggedIn){
+        
+    }
+}
+
+const initializeAnnotateJs = () => {
+    // let this_js_script = $("script[src*=bundle]");
+    // var my_var_1 = this_js_script.attr("allowed-users");
+    // var my_var_2 = this_js_script.attr("admin-users");
+    // if (typeof my_var_1 !== "undefined") {
+    //     let allowedUsers = my_var_1.split(",");
+    //     let adminUsers = my_var_2.split(",");
+    //     axios({
+    //         method: "post",
+    //         url: "http://localhost:8000/addUsers",
+    //         data: {
+    //             allowedUsers: allowedUsers,
+    //             domain: window.location.hostname,
+    //             adminUsers: adminUsers,
+    //         },
+    //     });
+    //     console.log(allowedUsers);
+    // }
     itemBeingCommented = undefined;
-    console.log(window.location.hostname);
     console.log("AnnotatorJs Loaded! ✌🏻");
 };
 
