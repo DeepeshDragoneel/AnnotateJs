@@ -3,6 +3,7 @@ import ReactDom from "react-dom";
 import { AnnotateStartMenu } from "./AnnotateStartMenu/AnnotateStartMenu";
 import { CommentBox } from "./CommentBox/CommentBox";
 import { SIdeBar } from "./SIdeBar/SIdeBar";
+import { UserLogin } from "./UserLogin/UserLogin";
 
 export const App = () => {
     return (
@@ -10,6 +11,7 @@ export const App = () => {
             <AnnotateStartMenu />
             <CommentBox />
             <SIdeBar/>
+            <UserLogin/>
         </>
     );
 };

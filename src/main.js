@@ -8,30 +8,53 @@ import { getStartAnnotation } from "./contants";
 
 let itemBeingCommented;
 
-window.onload = async() => {
+const checkUserLogin = () => {
     //checking wether the user is logged in
     let loggedIn = true;
+    const backDropLoginDiv = document.createElement("div");
+    backDropLoginDiv.id = "AnnotateJs_BackLoginDiv";
+    backDropLoginDiv.className = "AnnotateJs_Component";
+    backDropLoginDiv.style.position = "fixed";
+    backDropLoginDiv.style.top = "0";
+    backDropLoginDiv.style.left = "0";
+    backDropLoginDiv.style.width = "100vw";
+    backDropLoginDiv.style.height = "100vh";
+    backDropLoginDiv.style.backgroundColor = "rgba(0,0,0,0.7)";
+    backDropLoginDiv.style.zIndex = "99999991";
+    backDropLoginDiv.style.display = "flex";
+    backDropLoginDiv.style.justifyContent = "center";
+    backDropLoginDiv.style.alignItems = "center";
+    backDropLoginDiv.onclick = function (e) {
+        e.stopPropagation();
+    };
+    document.body.appendChild(backDropLoginDiv);
+    const userLoginPage = document.createElement("div");
+    userLoginPage.id = "AnnotateJs_UserLoginPage";
+    userLoginPage.className = "AnnotateJs_Component";
+    // userLoginPage.style.backgroundColor = "white";
+    backDropLoginDiv.appendChild(userLoginPage);
     if(localStorage.getItem("AnnotateJsUserToken") === undefined || localStorage.getItem("AnnotateJsUserToken") === null){
         console.log("User is not logged in");
         loggedIn = false;
     }
-    else{
-        const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
-        const result = axios({
-            method: "post",
-            url: "http://localhost:8000/checkUser",
-            data: {
-                AnnotateJsUserToken: AnnotateJsUserToken,
-            },
-        });
-        if(result.data.status === "success"){
-            console.log("User is logged in");
-        }
-        else{
-            loggedIn = false;
-            console.log("User is not logged in");
-        }
-    }
+    // else{
+    //     const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
+    //     const result = axios({
+    //         method: "post",
+    //         url: "http://localhost:8000/checkUser",
+    //         data: {
+    //             AnnotateJsUserToken: AnnotateJsUserToken,
+    //         },
+    //     });
+    //     if(result.data.status === "success"){
+    //         console.log("User is logged in");
+    //     }
+    //     else{
+    //         loggedIn = false;
+    //         console.log("User is not logged in");
+    //     }
+    // }
+    
     if(!loggedIn){
         
     }
@@ -587,3 +610,4 @@ export const toogleCommentSideBar = () => {
 
 // startAnnonatation();
 initializeAnnotateJs();
+checkUserLogin();
