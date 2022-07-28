@@ -8,7 +8,7 @@ import { getStartAnnotation } from "./contants";
 
 let itemBeingCommented;
 
-const checkUserLogin = () => {
+const checkUserLogin = async() => {
     //checking wether the user is logged in
     let loggedIn = true;
     const backDropLoginDiv = document.createElement("div");
@@ -37,23 +37,23 @@ const checkUserLogin = () => {
         console.log("User is not logged in");
         loggedIn = false;
     }
-    // else{
-    //     const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
-    //     const result = axios({
-    //         method: "post",
-    //         url: "http://localhost:8000/checkUser",
-    //         data: {
-    //             AnnotateJsUserToken: AnnotateJsUserToken,
-    //         },
-    //     });
-    //     if(result.data.status === "success"){
-    //         console.log("User is logged in");
-    //     }
-    //     else{
-    //         loggedIn = false;
-    //         console.log("User is not logged in");
-    //     }
-    // }
+    else{
+        const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
+        const result = axios({
+            method: "post",
+            url: "http://localhost:8000/checkUser",
+            data: {
+                AnnotateJsUserToken: AnnotateJsUserToken,
+            },
+        });
+        if(result.data.status === "success"){
+            console.log("User is logged in");
+        }
+        else{
+            loggedIn = false;
+            console.log("User is not logged in");
+        }
+    }
     
     if(!loggedIn){
         

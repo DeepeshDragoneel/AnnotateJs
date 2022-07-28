@@ -9,13 +9,21 @@ export const UserLogin = () => {
     // useEffect(() => {
     //     console.log(document.getElementById("AnnotateJs_UserLoginPage"));
     // }, [document.getElementById("AnnotateJs_UserLoginPage")]);
+    const [login, setLogin] = useState(true);
+    const [emailId, setemailId] = useState("");
+    const [passWord, setpassWord] = useState("");
+    const [checkPassWord, setCheckPassWord] = useState("");
+    const submitLoginDetails = async () => {
+        console.log(emailId);
+        console.log(passWord);
+    };
 
     return ReactDOM.createPortal(
         <div className="UserLoginMainDiv AnnotateJs_Component wrapper">
             <div className="UserLoginContent AnnotateJs_Component">
                 <header>
                     <h1 style={{ fontWeight: "normal", fontSize: "2rem" }}>
-                        Welcome to
+                        Welcome {login ? "Back" : ""} to
                     </h1>
                     <h1 style={{ fontWeight: "700" }}>AnnotateJs</h1>
                 </header>
@@ -45,6 +53,8 @@ export const UserLogin = () => {
                                 type="text"
                                 placeholder="Username or Email"
                                 id="username"
+                                value={emailId}
+                                onChange={(e) => setemailId(e.target.value)}
                             />
                         </div>
                         <div className="input-group">
@@ -53,17 +63,49 @@ export const UserLogin = () => {
                                 type="password"
                                 placeholder="Password"
                                 id="password"
+                                value={passWord}
+                                onChange={(e) => setpassWord(e.target.value)}
                             />
                         </div>
+                        {login ? null : (
+                            <div className="input-group">
+                                <label htmlFor="password">
+                                    Confirm Password
+                                </label>
+                                <input
+                                    type="password"
+                                    placeholder="Confirm Password"
+                                    id="password"
+                                    value={checkPassWord}
+                                    onChange={(e) =>
+                                        setCheckPassWord(e.target.value)
+                                    }
+                                />
+                            </div>
+                        )}
                         <div className="input-group">
-                            <button>Login</button>
+                            <button
+                                onClick={() => {
+                                    submitLoginDetails();
+                                }}
+                            >
+                                {login ? "Login" : "Signin"}
+                            </button>
                         </div>
                     </form>
                 </section>
                 <footer>
-                    <a href="#" title="Forgot Password">
-                        Forgot Password
-                    </a>
+                    <p className="UserLoginContentFooter">
+                        {login ? "Don't have an account?" : "Have an account?"}
+                        <span
+                            style={{ fontSize: "14px", color: "#20BDFF", cursor: "pointer" }}
+                            onClick={() => {
+                                setLogin((prev) => !prev);
+                            }}
+                        >
+                            {login ? " Register" : " Login"}
+                        </span>
+                    </p>
                 </footer>
             </div>
         </div>,
