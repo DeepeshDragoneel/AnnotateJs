@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+import axios from "axios";
 import "./UserLogin.scss";
 
 export const UserLogin = () => {
@@ -10,12 +11,48 @@ export const UserLogin = () => {
     //     console.log(document.getElementById("AnnotateJs_UserLoginPage"));
     // }, [document.getElementById("AnnotateJs_UserLoginPage")]);
     const [login, setLogin] = useState(true);
-    const [emailId, setemailId] = useState("");
-    const [passWord, setpassWord] = useState("");
+    const [email, setemail] = useState("");
+    const [username, setusername] = useState("");
+    const [password, setpassword] = useState("");
     const [checkPassWord, setCheckPassWord] = useState("");
+    const [msg, setMsg] = useState({
+        msg: "",
+        color: "",
+    });
+    const [showMsg, setshowMsg] = useState(false);
     const submitLoginDetails = async () => {
-        console.log(emailId);
-        console.log(passWord);
+        if (login) {
+            const result = await axios({
+                method: "post",
+                url: "http://localhost:8000/userLogin",
+                data: {
+                    email: email,
+                    password: password,
+                },
+            });
+            console.log(result.data);
+            if (!result.data.success) {
+                setMsg({
+                    msg: result.data.message,
+                    color: "red",
+                });
+                setshowMsg(true);
+            } else if (result.success === 500) {
+                setMsg({
+                    msg: "Internal Server Error",
+                    color: "red",
+                });
+                setshowMsg(true);
+            } else {
+                setshowMsg(false);
+                localStorage.setItem("AnnotateJsUserToken", result.data.token);
+                localStorage.setItem(
+                    "AnnotateJsUserName",
+                    result.data.userName
+                );
+                window.location.reload();
+            }
+        }
     };
 
     return ReactDOM.createPortal(
@@ -47,34 +84,65 @@ export const UserLogin = () => {
                         </button>
                     </div> */}
                     <form action="" className="login-form">
+                        {!login ? (
+                            <>
+                                <div className="input-group">
+                                    <label htmlFor="username">Username</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Username"
+                                        id="username"
+                                        value={username}
+                                        onChange={(e) =>
+                                            setusername(e.target.value)
+                                        }
+                                    />
+                                </div>
+                                <div className="input-group">
+                                    <label htmlFor="username">Email</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Email"
+                                        id="username"
+                                        value={email}
+                                        onChange={(e) =>
+                                            setemail(e.target.value)
+                                        }
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <div className="input-group">
+                                <label htmlFor="username">
+                                    Username or Email
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Username or Email"
+                                    id="username"
+                                    value={email}
+                                    onChange={(e) => setemail(e.target.value)}
+                                />
+                            </div>
+                        )}
                         <div className="input-group">
-                            <label htmlFor="username">Username or Email</label>
-                            <input
-                                type="text"
-                                placeholder="Username or Email"
-                                id="username"
-                                value={emailId}
-                                onChange={(e) => setemailId(e.target.value)}
-                            />
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="password">Password</label>
+                            <label htmlFor="password">password</label>
                             <input
                                 type="password"
-                                placeholder="Password"
+                                placeholder="password"
                                 id="password"
-                                value={passWord}
-                                onChange={(e) => setpassWord(e.target.value)}
+                                value={password}
+                                onChange={(e) => setpassword(e.target.value)}
                             />
                         </div>
                         {login ? null : (
                             <div className="input-group">
                                 <label htmlFor="password">
-                                    Confirm Password
+                                    Confirm password
                                 </label>
                                 <input
                                     type="password"
-                                    placeholder="Confirm Password"
+                                    placeholder="Confirm password"
                                     id="password"
                                     value={checkPassWord}
                                     onChange={(e) =>
@@ -85,7 +153,8 @@ export const UserLogin = () => {
                         )}
                         <div className="input-group">
                             <button
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.preventDefault();
                                     submitLoginDetails();
                                 }}
                             >
@@ -98,7 +167,11 @@ export const UserLogin = () => {
                     <p className="UserLoginContentFooter">
                         {login ? "Don't have an account?" : "Have an account?"}
                         <span
-                            style={{ fontSize: "14px", color: "#20BDFF", cursor: "pointer" }}
+                            style={{
+                                fontSize: "14px",
+                                color: "#20BDFF",
+                                cursor: "pointer",
+                            }}
                             onClick={() => {
                                 setLogin((prev) => !prev);
                             }}
@@ -107,6 +180,23 @@ export const UserLogin = () => {
                         </span>
                     </p>
                 </footer>
+                <div
+                    className="LoginPageMsg"
+                    style={{
+                        width: "100%",
+                        textAlign: "center",
+                    }}
+                >
+                    {showMsg ? (
+                        <p
+                            style={{
+                                color: msg.color,
+                            }}
+                        >
+                            {msg.msg}
+                        </p>
+                    ) : null}
+                </div>
             </div>
         </div>,
         document.getElementById("AnnotateJs_UserLoginPage")

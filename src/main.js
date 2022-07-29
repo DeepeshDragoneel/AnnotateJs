@@ -39,19 +39,20 @@ const checkUserLogin = async() => {
     }
     else{
         const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
-        const result = axios({
+        const result = await axios({
             method: "post",
             url: "http://localhost:8000/checkUser",
             data: {
                 AnnotateJsUserToken: AnnotateJsUserToken,
             },
         });
-        if(result.data.status === "success"){
+        if (result.data.success) {
             console.log("User is logged in");
-        }
-        else{
+            backDropLoginDiv.style.display = "none";
+        } else {
             loggedIn = false;
             console.log("User is not logged in");
+            localStorage.removeItem("AnnotateJsUserToken");
         }
     }
     
