@@ -21,6 +21,7 @@ export const UserLogin = () => {
     });
     const [showMsg, setshowMsg] = useState(false);
     const submitLoginDetails = async () => {
+        setshowMsg(false);
         if (login) {
             const result = await axios({
                 method: "post",
@@ -51,6 +52,52 @@ export const UserLogin = () => {
                     result.data.userName
                 );
                 window.location.reload();
+            }
+        } else {
+            if (password != checkPassWord) {
+                setMsg({
+                    msg: "Passwords do not match",
+                    color: "red",
+                });
+                setshowMsg(true);
+                return;
+            } else if (password <= 5) {
+                setMsg({
+                    msg: "Password must be atleast 6 characters",
+                    color: "red",
+                });
+                setshowMsg(true);
+                return;
+            } else {
+                const result = await axios({
+                    method: "post",
+                    url: "http://localhost:8000/userRegister",
+                    data: {
+                        userName: username,
+                        email: email,
+                        password: password,
+                    },
+                });
+                console.log(result.data);
+                if (!result.data.success) {
+                    setMsg({
+                        msg: result.data.message,
+                        color: "red",
+                    });
+                    setshowMsg(true);
+                } else if (result.success === 500) {
+                    setMsg({
+                        msg: "Internal Server Error",
+                        color: "red",
+                    });
+                    setshowMsg(true);
+                } else {
+                    setMsg({
+                        msg: "Verification Mail has been sent to your Gmail!",
+                        color: "green",
+                    });
+                    setshowMsg(true);
+                }
             }
         }
     };
@@ -103,7 +150,7 @@ export const UserLogin = () => {
                                     <input
                                         type="text"
                                         placeholder="Email"
-                                        id="username"
+                                        id="email"
                                         value={email}
                                         onChange={(e) =>
                                             setemail(e.target.value)
@@ -151,6 +198,23 @@ export const UserLogin = () => {
                                 />
                             </div>
                         )}
+                        <div
+                            className="LoginPageMsg"
+                            style={{
+                                width: "100%",
+                                textAlign: "center",
+                            }}
+                        >
+                            {showMsg ? (
+                                <p
+                                    style={{
+                                        color: msg.color,
+                                    }}
+                                >
+                                    {msg.msg}
+                                </p>
+                            ) : null}
+                        </div>
                         <div className="input-group">
                             <button
                                 onClick={(e) => {
@@ -180,23 +244,6 @@ export const UserLogin = () => {
                         </span>
                     </p>
                 </footer>
-                <div
-                    className="LoginPageMsg"
-                    style={{
-                        width: "100%",
-                        textAlign: "center",
-                    }}
-                >
-                    {showMsg ? (
-                        <p
-                            style={{
-                                color: msg.color,
-                            }}
-                        >
-                            {msg.msg}
-                        </p>
-                    ) : null}
-                </div>
             </div>
         </div>,
         document.getElementById("AnnotateJs_UserLoginPage")

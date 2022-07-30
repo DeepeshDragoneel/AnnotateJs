@@ -8,6 +8,7 @@ import {
     toogleCommentSideBar,
 } from "../main.js";
 import BugReportIcon from "@mui/icons-material/BugReport";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export const AnnotateStartMenu = () => {
     const [startAnnotateButtonClicked, setStartAnnotateButtonClicked] =
@@ -85,6 +86,23 @@ export const AnnotateStartMenu = () => {
                     title="Help"
                 >
                     &#x3F;
+                </div>
+            </div>
+            <div>
+                <div
+                    className="AnnotateJs_Component AnnotateStartMenuMainDivLogout"
+                    title="Logout"
+                    onClick={() => {
+                        localStorage.removeItem("AnnotateJsUserToken");
+                        window.location.reload();
+                    }}
+                >
+                    <LogoutIcon
+                        className="AnnotateJs_Component"
+                        style={{
+                            color: "#ff9191",
+                        }}
+                    />
                 </div>
             </div>
         </div>,

@@ -114,6 +114,29 @@ $dark-brown: #542900;
         -webkit-text-fill-color: transparent;
         -webkit-animation: hue 60s infinite linear;
     }
+    .AnnotateStartMenuMainDivLogout{
+        margin: 0 0.5rem 0 0.5rem;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
+        text-align: center;
+        text-transform: uppercase;
+        position: relative;
+        letter-spacing: 0.025em;
+        color: #5b85c0;
+        font-weight: bold;
+        box-shadow: inset 0px 1px 1px #aeaaaa;
+        background-image: -webkit-linear-gradient(
+            90deg,
+            #a558d4 0%,
+            #34619e 80%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -webkit-animation: hue 60s infinite linear;
+    }
     .AnnotateStartMenuMainDivIssues {
         margin: 0 0.5rem 0 1rem;
         color: linear-gradient(#ff9191 10%, #e9c06d 100%) !important;
