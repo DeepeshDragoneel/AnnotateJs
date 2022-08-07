@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ReactDOM from "react-dom";
 import "./SIdeBar.scss";
 import CloseIcon from "@mui/icons-material/Close";
@@ -8,30 +8,63 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import * as jsonData from "./tempSideBarData.json";
 import { toogleCommentSideBar } from "../main";
+import { LazyLoaderHook } from "../hooks/lazyloader";
 const data = jsonData.data;
 
 export const SIdeBar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [commentsData, setcommentsData] = useState([]);
+    const [commentData, setcommentData] = useState([]);
+    const [pagenumber, setPagenumber] = useState(0);
 
-    useEffect(() => {
-        setcommentsData(data);
-        // for(let i = 0; i < commentsData.length; i++){
-        //     commentsData[i].createdAt = formatTheDate(commentsData[i].createdAt);
-        // }
-        setcommentsData((prevState) => {
-            return prevState.map((comment) => {
-                // console.log(comment);
-                // console.log(formatTheDate(comment.createdAt));
-                const temp = {
-                    ...comment,
-                    createdAt: formatTheDate(comment.createdAt),
-                };
-                // console.log(temp);
-                return temp;
+    // useEffect(() => {
+    //     setcommentsData(data);
+    //     // for(let i = 0; i < commentsData.length; i++){
+    //     //     commentsData[i].createdAt = formatTheDate(commentsData[i].createdAt);
+    //     // }
+    //     setcommentsData((prevState) => {
+    //         return prevState.map((comment) => {
+    //             // console.log(comment);
+    //             // console.log(formatTheDate(comment.createdAt));
+    //             const temp = {
+    //                 ...comment,
+    //                 createdAt: formatTheDate(comment.createdAt),
+    //             };
+    //             // console.log(temp);
+    //             return temp;
+    //         });
+    //     });
+    // }, []);
+
+    const { loading, error, hasMore, comments } = LazyLoaderHook(pagenumber);
+
+    const lastCommentRef = useRef();
+    const lastCommentElement = useCallback(
+        (comment) => {
+            // console.log("loading: ", loading);
+            if (loading) return;
+            if (lastCommentRef.current) {
+                lastCommentRef.current.disconnect();
+            }
+            lastCommentRef.current = new IntersectionObserver((entries) => {
+                // console.log(hasMore, pagenumber, hasMore!>0);
+                // console.log(hasMore);
+                if (
+                    hasMore !== undefined &&
+                    hasMore > 0 &&
+                    entries[0].isIntersecting
+                ) {
+                    // console.log("lastCommentElement: ", comment);
+                    // console.log("visible");
+                    setPagenumber((pagenumber) => pagenumber + 1);
+                }
             });
-        });
-    }, []);
+            if (comment) {
+                lastCommentRef.current.observe(comment);
+            }
+        },
+        [loading, hasMore]
+    );
 
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -65,6 +98,7 @@ export const SIdeBar = () => {
             Math.ceil(day_diff / 365) + " years ago";
         return res;
     };
+
     return ReactDOM.createPortal(
         <div className="AnnotateJs_Component annotateJsSideBarMainDiv">
             <div className="AnnotateJs_Component annotateJsSideBarHeader">
@@ -128,7 +162,7 @@ export const SIdeBar = () => {
             </div>
             <hr className="AnnotateJs_Component" style={{ color: "black" }} />
             <div className="AnnotateJs_Component annotateJsSideBarBody">
-                {commentsData !== null &&
+                {/* {commentsData !== null &&
                 commentsData !== undefined &&
                 commentsData.length > 0 ? (
                     commentsData.map((item) => (
@@ -161,7 +195,71 @@ export const SIdeBar = () => {
                     <p className="AnnotateJs_Component noResultsFoundPage">
                         No Issues Found
                     </p>
+                )} */}
+                {comments !== undefined &&
+                comments.length !== null &&
+                comments.length > 0 ? (
+                    comments.map((item, idx) =>
+                        idx < comments.length - 1 ? (
+                            <div
+                                key={idx}
+                                className="AnnotateJs_Component annotateJsSideBarBodyDiv"
+                            >
+                                <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
+                                    <img
+                                        className="AnnotateJs_Component annotateJsSideBarBodyDivProfileImg"
+                                        src="https://material-ui.com/static/images/avatar/1.jpg"
+                                    />
+                                    <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfileName">
+                                        <p className="AnnotateJs_Component annotateJsSideBarBodyDivProfileNameP">
+                                            {item.userName}
+                                        </p>
+                                        <p className="AnnotateJs_Component annotateJsSideBarBodyDivTime">
+                                            {formatTheDate(item.created_at)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="AnnotateJs_Component annotateJsSideBarBodyDivComment">
+                                    <p className="AnnotateJs_Component annotateJsSideBarBodyDivCommentP">
+                                        {item.message}
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div
+                                key={idx}
+                                ref={lastCommentElement}
+                                className="AnnotateJs_Component annotateJsSideBarBodyDiv"
+                            >
+                                <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
+                                    <img
+                                        className="AnnotateJs_Component annotateJsSideBarBodyDivProfileImg"
+                                        src="https://material-ui.com/static/images/avatar/1.jpg"
+                                    />
+                                    <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfileName">
+                                        <p className="AnnotateJs_Component annotateJsSideBarBodyDivProfileNameP">
+                                            {item.userName}
+                                        </p>
+                                        <p className="AnnotateJs_Component annotateJsSideBarBodyDivTime">
+                                            {formatTheDate(item.created_at)}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="AnnotateJs_Component annotateJsSideBarBodyDivComment">
+                                    <p className="AnnotateJs_Component annotateJsSideBarBodyDivCommentP">
+                                        {item.message}
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    )
+                ) : (
+                    <p className="AnnotateJs_Component noResultsFoundPage">
+                        No Issues Found
+                    </p>
                 )}
+                {loading ? <p>Loading...</p> : null}
+                {error && <p>Error :</p>}
             </div>
         </div>,
         document.querySelector("#AnnotateJs_CommentsSideBarDiv")
