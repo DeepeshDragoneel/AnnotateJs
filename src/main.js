@@ -7,8 +7,9 @@ import axios from "axios";
 import { getStartAnnotation } from "./contants";
 
 let itemBeingCommented;
+let elementIdentifier;
 
-const checkUserLogin = async() => {
+const checkUserLogin = async () => {
     //checking wether the user is logged in
     let loggedIn = true;
     const backDropLoginDiv = document.createElement("div");
@@ -33,11 +34,13 @@ const checkUserLogin = async() => {
     userLoginPage.className = "AnnotateJs_Component";
     // userLoginPage.style.backgroundColor = "white";
     backDropLoginDiv.appendChild(userLoginPage);
-    if(localStorage.getItem("AnnotateJsUserToken") === undefined || localStorage.getItem("AnnotateJsUserToken") === null){
+    if (
+        localStorage.getItem("AnnotateJsUserToken") === undefined ||
+        localStorage.getItem("AnnotateJsUserToken") === null
+    ) {
         console.log("User is not logged in");
         loggedIn = false;
-    }
-    else{
+    } else {
         const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
         const result = await axios({
             method: "post",
@@ -55,30 +58,31 @@ const checkUserLogin = async() => {
             localStorage.removeItem("AnnotateJsUserToken");
         }
     }
-    
-    if(!loggedIn){
-        
+
+    if (!loggedIn) {
     }
-}
+};
 
 const initializeAnnotateJs = () => {
-    // let this_js_script = $("script[src*=bundle]");
-    // var my_var_1 = this_js_script.attr("allowed-users");
-    // var my_var_2 = this_js_script.attr("admin-users");
-    // if (typeof my_var_1 !== "undefined") {
-    //     let allowedUsers = my_var_1.split(",");
-    //     let adminUsers = my_var_2.split(",");
-    //     axios({
-    //         method: "post",
-    //         url: "http://localhost:8000/addUsers",
-    //         data: {
-    //             allowedUsers: allowedUsers,
-    //             domain: window.location.hostname,
-    //             adminUsers: adminUsers,
-    //         },
-    //     });
-    //     console.log(allowedUsers);
-    // }
+    let this_js_script = $("script[src*=bundle]");
+    var my_var_1 = this_js_script.attr("allowed-users");
+    var my_var_2 = this_js_script.attr("admin-users");
+    elementIdentifier = this_js_script.attr("attr-given");
+    console.log(elementIdentifier);
+    if (typeof my_var_1 !== "undefined") {
+        let allowedUsers = my_var_1.split(",");
+        let adminUsers = my_var_2.split(",");
+        axios({
+            method: "post",
+            url: "http://localhost:8000/addUsers",
+            data: {
+                allowedUsers: allowedUsers,
+                domain: window.location.hostname,
+                adminUsers: adminUsers,
+            },
+        });
+        console.log(allowedUsers);
+    }
     itemBeingCommented = undefined;
     console.log("AnnotatorJs Loaded! ✌🏻");
 };
@@ -405,8 +409,26 @@ startRenderingReact();
 
 let windowOnMouseOverPrevFunc, windowOnMouseDownPrevFunc;
 
-export const postComment = (comment) => {
+export const postComment = async (comment) => {
     console.log(itemBeingCommented, comment);
+    if (itemBeingCommented !== undefined && itemBeingCommented !== null) {
+        const result = await axios({
+            method: "POST",
+            url: `http://localhost:8000/postComment`,
+            data: {
+                comment: comment,
+                itemBeingCommented: itemBeingCommented,
+                pageOfDomain: window.location.href,
+                userToken: localStorage.getItem("AnnotateJsUserToken"),
+                domain: window.location.hostname,
+            },
+        });
+        // if (!result.success) {
+        //     localStorage.removeItem("AnnotateJsUserToken");
+        //     window.location.reload();
+        // }
+        console.log(result);
+    }
     closeAnnotateJsCommentBox();
 };
 
@@ -498,9 +520,10 @@ export const startAnnotation = () => {
 
     document.onclick = function (e) {
         if (e.target.classList.contains("AnnotateJs_Component")) return;
-        itemBeingCommented = e.target.className.split(" ").find((c) => {
-            return c.includes("AnnotateJs_");
-        });
+        // itemBeingCommented = e.target.className.split(" ").find((c) => {
+        //     return c.includes("AnnotateJs_");
+        // });
+        itemBeingCommented = e.target.getAttribute(elementIdentifier);
         const annotateJsCommentBoxDiv = document.getElementById(
             "AnnotateJs_CommentBoxDiv"
         );
