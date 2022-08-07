@@ -587,6 +587,7 @@ export const stopAnnotation = () => {
     if (elements.length !== 0) {
         elements[0].remove();
     }
+    document.onclick = null;
 };
 
 export const toogleCommentSideBar = () => {
