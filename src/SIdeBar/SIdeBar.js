@@ -9,6 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import * as jsonData from "./tempSideBarData.json";
 import { toogleCommentSideBar } from "../main";
 import { LazyLoaderHook } from "../hooks/lazyloader";
+import { elementIdentifier } from "../contants";
 const data = jsonData.data;
 
 export const SIdeBar = () => {
@@ -17,7 +18,46 @@ export const SIdeBar = () => {
     const [commentData, setcommentData] = useState([]);
     const [pagenumber, setPagenumber] = useState(0);
     const [idx, setidx] = useState(0);
-
+    function updateMask(target) {
+        let elements = document.getElementsByClassName("highlight-wrap");
+        let hObj;
+        if (elements.length !== 0) {
+            hObj = elements[0];
+        } else {
+            hObj = document.createElement("div");
+            hObj.className = "highlight-wrap";
+            hObj.style.position = "absolute";
+            hObj.style.backgroundColor = "aqua";
+            hObj.style.opacity = "0.5";
+            hObj.style.cursor = "default";
+            hObj.style.transition = "transform 1s ease-in-out";
+            hObj.style.transform = "scale(1.3)";
+            setTimeout(() => {
+                hObj.style.transform = "scale(1)";
+            }, 1000);
+            // hObj.style.pointerEvents = "auto";
+            hObj.style.pointerEvents = "none";
+            hObj.onmousedown = function (e) {
+                // console.log("mousedown");
+            };
+            hObj.style.zIndex = "9999999";
+            hObj.style.boxSizing = "border-box";
+            hObj.style.border = "1px solid blue";
+            document.body.appendChild(hObj);
+        }
+        let rect = target.getBoundingClientRect();
+        // target.style.pointerEvents = "none";
+        hObj.style.left = rect.left + window.scrollX + "px";
+        hObj.style.top = rect.top + window.scrollY + "px";
+        hObj.style.width = rect.width + "px";
+        hObj.style.height = rect.height + "px";
+    }
+    function removeMask() {
+        let elements = document.getElementsByClassName("highlight-wrap");
+        if (elements.length !== 0) {
+            elements[0].remove();
+        }
+    }
     // useEffect(() => {
     //     setcommentsData(data);
     //     // for(let i = 0; i < commentsData.length; i++){
@@ -225,6 +265,29 @@ export const SIdeBar = () => {
                             <div
                                 key={idx}
                                 className="AnnotateJs_Component annotateJsSideBarBodyDiv"
+                                onClick={() => {
+                                    toogleCommentSideBar();
+                                    const element = document.querySelector(
+                                        `[${elementIdentifier}="${item.elementIdentifier}"]`
+                                    );
+                                    console.log(
+                                        `[${elementIdentifier}="${item.elementIdentifier}"]`
+                                    );
+                                    element.scrollIntoView({
+                                        behavior: "smooth",
+                                        block: "center",
+                                    });
+                                    element.style.transition =
+                                        "transform 1s ease-in-out";
+                                    element.style.transform = "scale(1.3)";
+                                    setTimeout(() => {
+                                        element.style.transform = "scale(1)";
+                                    }, 1000);
+                                    updateMask(element);
+                                    setTimeout(() => {
+                                        removeMask();
+                                    }, 2000);
+                                }}
                             >
                                 <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
                                     <img
