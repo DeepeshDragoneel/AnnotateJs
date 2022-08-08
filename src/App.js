@@ -10,8 +10,8 @@ export const App = () => {
         <>
             <AnnotateStartMenu />
             <CommentBox />
-            <SIdeBar/>
-            <UserLogin/>
+            <SIdeBar />
+            <UserLogin />
         </>
     );
 };

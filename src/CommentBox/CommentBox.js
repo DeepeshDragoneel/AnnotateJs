@@ -3,9 +3,11 @@ import ReactDom from "react-dom";
 import Avatar from "@mui/material/Avatar";
 import "./CommentBox.scss";
 import { closeAnnotateJsCommentBox, postComment } from "../main";
+import { StoreContext } from "../utils/store";
 
 export const CommentBox = () => {
     const [Comment, setComment] = useState("");
+    const [Comments, setComments] = useState([]);
 
     return ReactDom.createPortal(
         <div className="AnnotateJs_Component CommentBoxMainDiv">
@@ -39,6 +41,19 @@ export const CommentBox = () => {
                     onClick={() => {
                         // console.log("Comment: ", Comment);
                         postComment(Comment);
+                        setComments((comments) => {
+                            return [
+                                {
+                                    userName:
+                                        localStorage.getItem(
+                                            "AnnotateJsUserName"
+                                        ),
+                                    message: Comment,
+                                    created_at: new Date(),
+                                },
+                                ...comments,
+                            ];
+                        });
                         setComment("");
                     }}
                 >

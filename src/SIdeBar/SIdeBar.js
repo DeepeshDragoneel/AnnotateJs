@@ -16,6 +16,7 @@ export const SIdeBar = () => {
     const [commentsData, setcommentsData] = useState([]);
     const [commentData, setcommentData] = useState([]);
     const [pagenumber, setPagenumber] = useState(0);
+    const [idx, setidx] = useState(0);
 
     // useEffect(() => {
     //     setcommentsData(data);
@@ -36,7 +37,14 @@ export const SIdeBar = () => {
     //     });
     // }, []);
 
-    const { loading, error, hasMore, comments } = LazyLoaderHook(pagenumber);
+    const { loading, error, hasMore, comments } = LazyLoaderHook(
+        pagenumber,
+        idx
+    );
+
+    useEffect(() => {
+        console.log("comments: ", comments);
+    }, [comments]);
 
     const lastCommentRef = useRef();
     const lastCommentElement = useCallback(
@@ -70,19 +78,28 @@ export const SIdeBar = () => {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const handleClose = () => {
+    const handleClose = (idx) => {
+        setidx(idx);
+        setPagenumber(0);
         setAnchorEl(null);
     };
+    Date.prototype.addHours = function (h) {
+        this.setTime(this.getTime() + h * 60 * 60 * 1000);
+        return this;
+    };
+
+    Date.prototype.addHoursAndMinutes = function (h, m) {
+        this.setTime(this.getTime() + h * 60 * 60 * 1000 + m * 60 * 1000);
+        return this;
+    };
+
     const formatTheDate = (time) => {
-        var date = new Date(
-                (time || "").replace(/-/g, "/").replace(/[TZ]/g, " ")
-            ),
+        var date = new Date(time).addHoursAndMinutes(5, 30),
             diff = (new Date().getTime() - date.getTime()) / 1000,
             day_diff = Math.floor(diff / 86400);
-
-        // console.log("res: ", date, day_diff);
+        // console.log(new Date().getTime() - date.getTime());
+        // console.log("res: ", date, "day_diff: ", day_diff, "diff: ", diff);
         if (isNaN(day_diff) || day_diff < 0) return;
-
         const res =
             (day_diff == 0 &&
                 ((diff < 60 && "just now") ||
@@ -127,20 +144,24 @@ export const SIdeBar = () => {
                         />
                     </Button>
                     <Menu
-                        style={{ zIndex: "99999994" }}
+                        style={{ zIndex: "99999999" }}
                         id="basic-menu"
                         anchorEl={anchorEl}
                         open={open}
-                        onClose={handleClose}
+                        onClose={() => handleClose(-1)}
                         MenuListProps={{
                             "aria-labelledby": "basic-button",
                         }}
                     >
-                        <MenuItem onClick={handleClose}>My Comments</MenuItem>
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={() => handleClose(0)}>
                             Latest Comments
                         </MenuItem>
-                        <MenuItem onClick={handleClose}>Resolved</MenuItem>
+                        <MenuItem onClick={() => handleClose(1)}>
+                            My Comments
+                        </MenuItem>
+                        <MenuItem onClick={() => handleClose(2)}>
+                            Resolved
+                        </MenuItem>
                     </Menu>
                     <Button
                         className="AnnotateJs_Component annotateJsSideBarButton"

@@ -5,6 +5,7 @@ import { AnnotateStartMenu } from "./AnnotateStartMenu/AnnotateStartMenu";
 import { App } from "./App";
 import axios from "axios";
 import { getStartAnnotation } from "./contants";
+import StoreProvider from "./utils/store";
 
 let itemBeingCommented;
 let elementIdentifier;
@@ -196,7 +197,11 @@ const startRenderingReact = () => {
     // annotateJsCommentBoxDiv.style.display = "none";
     document.body.appendChild(annotateJsCommentBoxDiv);
     createSideBarForComments();
-    ReactDOM.createRoot(startAnnotatorButtonDiv).render(<App />);
+    ReactDOM.createRoot(startAnnotatorButtonDiv).render(
+        <StoreProvider>
+            <App />
+        </StoreProvider>
+    );
 };
 
 const uniqueClassNameGen = uuidv4();

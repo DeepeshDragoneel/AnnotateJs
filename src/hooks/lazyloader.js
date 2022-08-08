@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios, { Canceler } from "axios";
 import { serverUrl } from "../contants";
+import { StoreContext } from "../utils/store";
 
-export const LazyLoaderHook = (pagenumber) => {
+export const LazyLoaderHook = (pagenumber, idx) => {
     const [loading, setloading] = useState(true);
     const [error, seterror] = useState(false);
-    const [comments, setcomments] = useState([]);
+    // const [comments, setcomments] = useState([]);
+    const [comments, setcomments] = useContext(StoreContext).comments;
+
     const [hasMore, sethasMore] = useState();
 
     useEffect(() => {
@@ -20,6 +23,8 @@ export const LazyLoaderHook = (pagenumber) => {
                 pageNumber: pagenumber,
                 pageOfDomain: window.location.href,
                 domain: window.location.hostname,
+                username: localStorage.getItem("AnnotateJsUserName"),
+                idx: idx,
             },
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
         })
@@ -39,7 +44,15 @@ export const LazyLoaderHook = (pagenumber) => {
                 console.log(error);
             });
         return () => cancel();
-    }, [pagenumber]);
+    }, [pagenumber, idx]);
+
+    useEffect(() => {
+        console.log("comments: ", comments);
+    }, [comments]);
+
+    useEffect(() => {
+        setcomments([]);
+    }, [idx]);
 
     return { loading, error, hasMore, comments };
 };
