@@ -9,7 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 import * as jsonData from "./tempSideBarData.json";
 import { toogleCommentSideBar } from "../main";
 import { LazyLoaderHook } from "../hooks/lazyloader";
-import { elementIdentifier } from "../contants";
+import { elementIdentifier, serverUrl } from "../contants";
+import axios from "axios";
 const data = jsonData.data;
 
 export const SIdeBar = () => {
@@ -18,6 +19,10 @@ export const SIdeBar = () => {
     const [commentData, setcommentData] = useState([]);
     const [pagenumber, setPagenumber] = useState(0);
     const [idx, setidx] = useState(0);
+    const [isAdmin, setIsAdmin] = useState(
+        localStorage.getItem("AnnotateJsUserRole") == 1
+    );
+
     function updateMask(target) {
         let elements = document.getElementsByClassName("highlight-wrap");
         let hObj;
@@ -82,9 +87,7 @@ export const SIdeBar = () => {
         idx
     );
 
-    useEffect(() => {
-        console.log("comments: ", comments);
-    }, [comments]);
+    useEffect(() => {}, [comments, isAdmin]);
 
     const lastCommentRef = useRef();
     const lastCommentElement = useCallback(
@@ -154,6 +157,27 @@ export const SIdeBar = () => {
             (day_diff < 60 && Math.ceil(day_diff / 31) + " months ago") ||
             Math.ceil(day_diff / 365) + " years ago";
         return res;
+    };
+
+    const resolveComment = async (commentId) => {
+        const result = await axios({
+            method: 'POST',
+            url: `${serverUrl}/resolveComment`,
+            data: {
+                commentId: commentId,
+                token: localStorage.getItem("AnnotateJsUserToken"),
+                domain: window.location.hostname,
+            },
+        });
+        if (result.success) {
+            setcommentsData((prevState) => {
+                return prevState.filter((comment) => {
+                    return comment.id !== commentId;
+                });
+            });
+        } else {
+            alert(result.message);
+        }
     };
 
     return ReactDOM.createPortal(
@@ -308,12 +332,58 @@ export const SIdeBar = () => {
                                         {item.message}
                                     </p>
                                 </div>
+                                {isAdmin ? (
+                                    <div className="AnnotateJs_Component annotateJsSideBarBodyDivDelete">
+                                        <Button
+                                            className="AnnotateJs_Component annotateJsSideBarBodyDivDeleteButton"
+                                            variant="text"
+                                            style={{
+                                                backgroundColor: "#5BB318",
+                                                color: "white",
+                                                padding: "2px 10px",
+                                                fontWeight: "bold",
+                                                borderRadius: "10px",
+                                                width: "8rem",
+                                                fontSize: "0.5rem",
+                                            }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                resolveComment(item.commentId);
+                                            }}
+                                        >
+                                            Mark Resolved
+                                        </Button>
+                                    </div>
+                                ) : null}
                             </div>
                         ) : (
                             <div
                                 key={idx}
                                 ref={lastCommentElement}
                                 className="AnnotateJs_Component annotateJsSideBarBodyDiv"
+                                onClick={() => {
+                                    toogleCommentSideBar();
+                                    const element = document.querySelector(
+                                        `[${elementIdentifier}="${item.elementIdentifier}"]`
+                                    );
+                                    console.log(
+                                        `[${elementIdentifier}="${item.elementIdentifier}"]`
+                                    );
+                                    element.scrollIntoView({
+                                        behavior: "smooth",
+                                        block: "center",
+                                    });
+                                    element.style.transition =
+                                        "transform 1s ease-in-out";
+                                    element.style.transform = "scale(1.3)";
+                                    setTimeout(() => {
+                                        element.style.transform = "scale(1)";
+                                    }, 1000);
+                                    updateMask(element);
+                                    setTimeout(() => {
+                                        removeMask();
+                                    }, 2000);
+                                }}
                             >
                                 <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
                                     <img

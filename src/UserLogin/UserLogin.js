@@ -23,15 +23,17 @@ export const UserLogin = () => {
     const submitLoginDetails = async () => {
         setshowMsg(false);
         if (login) {
+            console.log("Login");
             const result = await axios({
                 method: "post",
                 url: "http://localhost:8000/userLogin",
                 data: {
                     email: email,
                     password: password,
+                    domain: window.location.hostname,
                 },
             });
-            console.log(result.data);
+            console.log(result);
             if (!result.data.success) {
                 setMsg({
                     msg: result.data.message,
@@ -51,6 +53,9 @@ export const UserLogin = () => {
                     "AnnotateJsUserName",
                     result.data.userName
                 );
+                localStorage.setItem("AnnotateJsUserEmail", result.data.email);
+                localStorage.setItem("AnnotateJsUserId", result.data.userId);
+                localStorage.setItem("AnnotateJsUserRole", result.data.isAdmin);
                 window.location.reload();
             }
         } else {

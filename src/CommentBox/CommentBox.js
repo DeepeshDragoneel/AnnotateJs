@@ -8,7 +8,6 @@ import { StoreContext } from "../utils/store";
 export const CommentBox = () => {
     const [Comment, setComment] = useState("");
     const [Comments, setComments] = useState([]);
-
     return ReactDom.createPortal(
         <div className="AnnotateJs_Component CommentBoxMainDiv">
             <div className="AnnotateJs_Component CommentBoxUserDetailsDiv">

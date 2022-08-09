@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import { AnnotateStartMenu } from "./AnnotateStartMenu/AnnotateStartMenu";
 import { App } from "./App";
 import axios from "axios";
-import { getStartAnnotation } from "./contants";
+import { serverUrl } from "./contants";
 import StoreProvider from "./utils/store";
 
 let itemBeingCommented;
@@ -45,7 +45,7 @@ const checkUserLogin = async () => {
         const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
         const result = await axios({
             method: "post",
-            url: "http://localhost:8000/checkUser",
+            url: `${serverUrl}/checkUser`,
             data: {
                 AnnotateJsUserToken: AnnotateJsUserToken,
             },
