@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import ReactDom from "react-dom";
 import Avatar from "@mui/material/Avatar";
 import "./CommentBox.scss";
@@ -8,6 +8,7 @@ import { StoreContext } from "../utils/store";
 export const CommentBox = () => {
     const [Comment, setComment] = useState("");
     const [Comments, setComments] = useState([]);
+    const { comments, setcomments } = useContext(StoreContext);
     return ReactDom.createPortal(
         <div className="AnnotateJs_Component CommentBoxMainDiv">
             <div className="AnnotateJs_Component CommentBoxUserDetailsDiv">
@@ -40,7 +41,7 @@ export const CommentBox = () => {
                     onClick={() => {
                         // console.log("Comment: ", Comment);
                         postComment(Comment);
-                        setComments((comments) => {
+                        setcomments((comments) => {
                             return [
                                 {
                                     userName:

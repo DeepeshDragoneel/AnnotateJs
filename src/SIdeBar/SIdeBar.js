@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+    useState,
+    useEffect,
+    useRef,
+    useCallback,
+    useContext,
+} from "react";
 import ReactDOM from "react-dom";
 import "./SIdeBar.scss";
 import CloseIcon from "@mui/icons-material/Close";
@@ -10,6 +16,7 @@ import * as jsonData from "./tempSideBarData.json";
 import { toogleCommentSideBar } from "../main";
 import { LazyLoaderHook } from "../hooks/lazyloader";
 import { elementIdentifier, serverUrl } from "../contants";
+import { StoreContext } from "../utils/store";
 import axios from "axios";
 const data = jsonData.data;
 
@@ -22,6 +29,8 @@ export const SIdeBar = () => {
     const [isAdmin, setIsAdmin] = useState(
         localStorage.getItem("AnnotateJsUserRole") == 1
     );
+
+    const { comments, setcomments } = useContext(StoreContext);
 
     function updateMask(target) {
         let elements = document.getElementsByClassName("highlight-wrap");
@@ -82,10 +91,7 @@ export const SIdeBar = () => {
     //     });
     // }, []);
 
-    const { loading, error, hasMore, comments } = LazyLoaderHook(
-        pagenumber,
-        idx
-    );
+    const { loading, error, hasMore } = LazyLoaderHook(pagenumber, idx);
 
     useEffect(() => {}, [comments, isAdmin]);
 
@@ -160,8 +166,9 @@ export const SIdeBar = () => {
     };
 
     const resolveComment = async (commentId) => {
+        console.log("resolveComment: ", commentId);
         const result = await axios({
-            method: 'POST',
+            method: "POST",
             url: `${serverUrl}/resolveComment`,
             data: {
                 commentId: commentId,
@@ -169,14 +176,17 @@ export const SIdeBar = () => {
                 domain: window.location.hostname,
             },
         });
-        if (result.success) {
-            setcommentsData((prevState) => {
+        console.log("result: ", result);
+        if (result.data.success) {
+            setcomments((prevState) => {
+                console.log("prevState: ", prevState);
                 return prevState.filter((comment) => {
-                    return comment.id !== commentId;
+                    return comment.commentsId !== commentId;
                 });
+                // console.log("newCommment: ", newcommment);
             });
         } else {
-            alert(result.message);
+            alert(result.data.message);
         }
     };
 
@@ -348,7 +358,8 @@ export const SIdeBar = () => {
                                             }}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                resolveComment(item.commentId);
+                                                console.log(item);
+                                                resolveComment(item.commentsId);
                                             }}
                                         >
                                             Mark Resolved

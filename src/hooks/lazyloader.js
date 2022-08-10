@@ -7,7 +7,7 @@ export const LazyLoaderHook = (pagenumber, idx) => {
     const [loading, setloading] = useState(true);
     const [error, seterror] = useState(false);
     // const [comments, setcomments] = useState([]);
-    const [comments, setcomments] = useContext(StoreContext).comments;
+    const { comments, setcomments } = useContext(StoreContext);
 
     const [hasMore, sethasMore] = useState();
 
@@ -46,9 +46,9 @@ export const LazyLoaderHook = (pagenumber, idx) => {
         return () => cancel();
     }, [pagenumber, idx]);
 
-    useEffect(() => {
-        console.log("comments: ", comments);
-    }, [comments]);
+    // useEffect(() => {
+    //     console.log("comments: ", comments);
+    // }, [comments]);
 
     useEffect(() => {
         setcomments([]);
