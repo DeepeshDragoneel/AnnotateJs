@@ -6,6 +6,7 @@ import {
     startAnnotation,
     stopAnnotation,
     toogleCommentSideBar,
+    displayHelpDiv,
 } from "../main.js";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -84,6 +85,9 @@ export const AnnotateStartMenu = () => {
                 <div
                     className="AnnotateJs_Component AnnotateStartMenuMainDivHelp"
                     title="Help"
+                    onClick={() => {
+                        displayHelpDiv();
+                    }}
                 >
                     &#x3F;
                 </div>

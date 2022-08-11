@@ -202,6 +202,19 @@ const startRenderingReact = () => {
     annotateJsCommentBoxDiv.style.display = "none";
     annotateJsCommentBoxDiv.style.zIndex = "99999992";
     annotateJsCommentBoxDiv.style.backgroundColor = "white";
+
+    const annotateJsHelpDiv = document.createElement("div");
+    annotateJsHelpDiv.id = "AnnotateJs_HelpDiv";
+    annotateJsHelpDiv.className = "AnnotateJs_Component";
+    annotateJsHelpDiv.style.position = "fixed";
+    annotateJsHelpDiv.style.top = "0";
+    annotateJsHelpDiv.style.left = "0";
+    annotateJsHelpDiv.style.width = "100vw";
+    annotateJsHelpDiv.style.height = "100vh";
+    annotateJsHelpDiv.style.backgroundColor = "rgba(0,0,0,0.3)";
+    annotateJsHelpDiv.style.zIndex = "99999991";
+    annotateJsHelpDiv.style.display = "none";
+    document.body.appendChild(annotateJsHelpDiv);
     // annotateJsCommentBoxDiv.style.display = "none";
     document.body.appendChild(annotateJsCommentBoxDiv);
     createSideBarForComments();
@@ -644,6 +657,25 @@ export const toogleCommentSideBar = () => {
         annotateJsCommentBoxDiv.style.right = "-100%";
         annotateJsCommentsSideBarBackDropDiv.style.display = "none";
     }
+};
+
+const closeAnnotateJsHelpDiv = () => {
+    const annotateJsHelpDiv = document.getElementById("AnnotateJs_HelpDiv");
+    annotateJsHelpDiv.style.display = "none";
+};
+
+export const displayHelpDiv = () => {
+    const annotateJsHelpDiv = document.getElementById("AnnotateJs_HelpDiv");
+    annotateJsHelpDiv.style.display = "flex";
+    annotateJsHelpDiv.style.justifyContent = "center";
+    annotateJsHelpDiv.style.alignItems = "center";
+    annotateJsHelpDiv.onclick = function (e) {
+        console.log("mousedown");
+        e.stopPropagation();
+        closeAnnotateJsHelpDiv();
+    };
+    document.body.appendChild(annotateJsHelpDiv);
+    disableScroll();
 };
 
 // startAnnonatation();
