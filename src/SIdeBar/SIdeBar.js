@@ -90,6 +90,9 @@ export const SIdeBar = () => {
     //         });
     //     });
     // }, []);
+    useEffect(() => {
+        console.log(isAdmin);
+    }, [isAdmin]);
 
     const { loading, error, hasMore } = LazyLoaderHook(pagenumber, filter);
 
@@ -297,7 +300,9 @@ export const SIdeBar = () => {
                     <h3>My Comments</h3>
                 ) : filter === 2 ? (
                     <h3>Resolved</h3>
-                ) : <h3>Error</h3>}
+                ) : (
+                    <h3>Error</h3>
+                )}
                 {comments !== undefined &&
                 comments.length !== null &&
                 comments.length > 0 ? (

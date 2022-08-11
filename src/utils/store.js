@@ -4,6 +4,7 @@ export const StoreContext = createContext();
 
 export default ({ children }) => {
     const [comments, setcomments] = useState([]);
+    const [loginCard, setloginCard] = useState(true);
 
     const addComments = (comments) => {
         setcomments((comments) => {
@@ -16,6 +17,8 @@ export default ({ children }) => {
         comments: comments,
         setcomments: setcomments,
         addComments: addComments,
+        loginCard: loginCard,
+        setloginCard: setloginCard,
     };
 
     return (

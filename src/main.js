@@ -1,14 +1,17 @@
 import { v4 as uuidv4 } from "uuid";
-import React from "react";
+import React, { useContext } from "react";
 import ReactDOM from "react-dom/client";
 import { AnnotateStartMenu } from "./AnnotateStartMenu/AnnotateStartMenu";
 import { App } from "./App";
 import axios from "axios";
 import { serverUrl } from "./contants";
+import { StoreContext } from "./utils/store";
 import StoreProvider from "./utils/store";
 
 let itemBeingCommented;
 let elementIdentifier;
+
+// const { loginCard, setloginCard } = useContext(StoreContext);
 
 const checkUserLogin = async () => {
     //checking wether the user is logged in
@@ -48,11 +51,16 @@ const checkUserLogin = async () => {
             url: `${serverUrl}/checkUser`,
             data: {
                 AnnotateJsUserToken: AnnotateJsUserToken,
+                domain: window.location.hostname,
             },
         });
         if (result.data.success) {
-            console.log("User is logged in");
-            backDropLoginDiv.style.display = "none";
+            if (!result.data.access) {
+                console.log("User has no access");
+            } else {
+                console.log("User is logged in");
+                backDropLoginDiv.style.display = "none";
+            }
         } else {
             loggedIn = false;
             console.log("User is not logged in");
