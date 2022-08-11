@@ -25,7 +25,7 @@ export const SIdeBar = () => {
     const [commentsData, setcommentsData] = useState([]);
     const [commentData, setcommentData] = useState([]);
     const [pagenumber, setPagenumber] = useState(0);
-    const [idx, setidx] = useState(0);
+    const [filter, setfilter] = useState(0);
     const [isAdmin, setIsAdmin] = useState(
         localStorage.getItem("AnnotateJsUserRole") == 1
     );
@@ -91,7 +91,7 @@ export const SIdeBar = () => {
     //     });
     // }, []);
 
-    const { loading, error, hasMore } = LazyLoaderHook(pagenumber, idx);
+    const { loading, error, hasMore } = LazyLoaderHook(pagenumber, filter);
 
     useEffect(() => {}, [comments, isAdmin]);
 
@@ -128,7 +128,7 @@ export const SIdeBar = () => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = (idx) => {
-        setidx(idx);
+        setfilter(idx);
         setPagenumber(0);
         setAnchorEl(null);
     };
@@ -291,6 +291,13 @@ export const SIdeBar = () => {
                         No Issues Found
                     </p>
                 )} */}
+                {filter === 0 ? (
+                    <h3>Latest Comments</h3>
+                ) : filter === 1 ? (
+                    <h3>My Comments</h3>
+                ) : filter === 2 ? (
+                    <h3>Resolved</h3>
+                ) : <h3>Error</h3>}
                 {comments !== undefined &&
                 comments.length !== null &&
                 comments.length > 0 ? (
@@ -342,7 +349,7 @@ export const SIdeBar = () => {
                                         {item.message}
                                     </p>
                                 </div>
-                                {isAdmin ? (
+                                {isAdmin && filter !== 2 ? (
                                     <div className="AnnotateJs_Component annotateJsSideBarBodyDivDelete">
                                         <Button
                                             className="AnnotateJs_Component annotateJsSideBarBodyDivDeleteButton"
@@ -415,6 +422,30 @@ export const SIdeBar = () => {
                                         {item.message}
                                     </p>
                                 </div>
+                                {isAdmin && filter !== 2 ? (
+                                    <div className="AnnotateJs_Component annotateJsSideBarBodyDivDelete">
+                                        <Button
+                                            className="AnnotateJs_Component annotateJsSideBarBodyDivDeleteButton"
+                                            variant="text"
+                                            style={{
+                                                backgroundColor: "#5BB318",
+                                                color: "white",
+                                                padding: "2px 10px",
+                                                fontWeight: "bold",
+                                                borderRadius: "10px",
+                                                width: "8rem",
+                                                fontSize: "0.5rem",
+                                            }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                console.log(item);
+                                                resolveComment(item.commentsId);
+                                            }}
+                                        >
+                                            Mark Resolved
+                                        </Button>
+                                    </div>
+                                ) : null}
                             </div>
                         )
                     )
