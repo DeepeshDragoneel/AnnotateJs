@@ -12,13 +12,11 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import * as jsonData from "./tempSideBarData.json";
 import { toogleCommentSideBar } from "../main";
 import { LazyLoaderHook } from "../hooks/lazyloader";
 import { elementIdentifier, serverUrl } from "../contants";
 import { StoreContext } from "../utils/store";
 import axios from "axios";
-const data = jsonData.data;
 
 export const SIdeBar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -338,7 +336,11 @@ export const SIdeBar = () => {
                                 <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
                                     <img
                                         className="AnnotateJs_Component annotateJsSideBarBodyDivProfileImg"
-                                        src="https://material-ui.com/static/images/avatar/1.jpg"
+                                        src={`https://avatars.dicebear.com/api/human/${
+                                            item === undefined
+                                                ? "temmp"
+                                                : item.userName
+                                        }.svg`}
                                     />
                                     <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfileName">
                                         <p className="AnnotateJs_Component annotateJsSideBarBodyDivProfileNameP">
@@ -411,7 +413,11 @@ export const SIdeBar = () => {
                                 <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfile">
                                     <img
                                         className="AnnotateJs_Component annotateJsSideBarBodyDivProfileImg"
-                                        src="https://material-ui.com/static/images/avatar/1.jpg"
+                                        src={`https://avatars.dicebear.com/api/human/${
+                                            item === undefined
+                                                ? "temmp"
+                                                : item.userName
+                                        }.svg`}
                                     />
                                     <div className="AnnotateJs_Component annotateJsSideBarBodyDivProfileName">
                                         <p className="AnnotateJs_Component annotateJsSideBarBodyDivProfileNameP">

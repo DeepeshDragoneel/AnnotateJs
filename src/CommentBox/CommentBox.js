@@ -12,13 +12,20 @@ export const CommentBox = () => {
     return ReactDom.createPortal(
         <div className="AnnotateJs_Component CommentBoxMainDiv">
             <div className="AnnotateJs_Component CommentBoxUserDetailsDiv">
-                <img
-                    className="AnnotateJs_Component CommentBoxUserDetailsAvatar"
-                    src="https://material-ui.com/static/images/avatar/1.jpg"
+                {/* <img
+                    src={`https://avatars.dicebear.com/api/human/${localStorage.getItem(
+                        "AnnotateJsUserName"
+                    )}.svg`}
+                /> */}
+                <Avatar
+                    alt="Remy Sharp"
+                    src={`https://avatars.dicebear.com/api/human/${localStorage.getItem(
+                        "AnnotateJsUserName"
+                    )}.svg`}
                 />
                 <div className="AnnotateJs_Component CommentBoxUserDetailsDiv">
                     <p className="AnnotateJs_Component CommentBoxUserDetailsP">
-                        User Name
+                        {localStorage.getItem("AnnotateJsUserName")}
                     </p>
                 </div>
             </div>

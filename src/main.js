@@ -13,9 +13,9 @@ let elementIdentifier;
 
 // const { loginCard, setloginCard } = useContext(StoreContext);
 
+export let loggedIn = true;
 export const checkUserLogin = async () => {
     //checking wether the user is logged in
-    let loggedIn = true;
     const backDropLoginDiv = document.createElement("div");
     backDropLoginDiv.id = "AnnotateJs_BackLoginDiv";
     backDropLoginDiv.className = "AnnotateJs_Component";
@@ -46,17 +46,30 @@ export const checkUserLogin = async () => {
         loggedIn = false;
     } else {
         const AnnotateJsUserToken = localStorage.getItem("AnnotateJsUserToken");
-        const result = await axios({
-            method: "post",
-            url: `${serverUrl}/checkUser`,
-            data: {
+        // const result = await axios({
+        //     method: "post",
+        //     url: `${serverUrl}/checkUser`,
+        //     data: {
+        //         AnnotateJsUserToken: AnnotateJsUserToken,
+        //         domain: window.location.hostname,
+        //     },
+        // });
+        const result = await axios.post(
+            `${serverUrl}/checkUser`,
+            {
                 AnnotateJsUserToken: AnnotateJsUserToken,
                 domain: window.location.hostname,
             },
-        });
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
         if (result.data.success) {
             if (!result.data.access) {
                 console.log("User has no access");
+                return;
             } else {
                 console.log("User is logged in");
                 backDropLoginDiv.style.display = "none";
@@ -73,11 +86,10 @@ export const checkUserLogin = async () => {
 };
 
 export const initializeAnnotateJs = () => {
-    let this_js_script = $("script[src*=bundle]");
-    var my_var_1 = this_js_script.attr("allowed-users");
-    var my_var_2 = this_js_script.attr("admin-users");
-    elementIdentifier = this_js_script.attr("attr-given");
-    console.log(elementIdentifier);
+    const js_script_tag = document.getElementById("AnnotateJs_Script_Id");
+    var my_var_1 = js_script_tag.getAttribute("data-allowedUsers");
+    var my_var_2 = js_script_tag.getAttribute("data-admin-users");
+    elementIdentifier = js_script_tag.getAttribute("data-attr-given");
     if (typeof my_var_1 !== "undefined") {
         let allowedUsers = my_var_1.split(",");
         let adminUsers = my_var_2.split(",");
@@ -90,7 +102,6 @@ export const initializeAnnotateJs = () => {
                 adminUsers: adminUsers,
             },
         });
-        console.log(allowedUsers);
     }
     itemBeingCommented = undefined;
     console.log("AnnotatorJs Loaded! ✌🏻");
@@ -111,21 +122,21 @@ export const createSideBarForComments = () => {
     annotateJsCommentsSideBarDiv.style.zIndex = "99999995";
     annotateJsCommentsSideBarDiv.style.transition = "1s ease-in-out";
     annotateJsCommentsSideBarDiv.style.boxShadow = "0px 0px 10px #000000";
-    const issesSideBarBackDrop = document.createElement("div");
-    issesSideBarBackDrop.id = "AnnotateJs_CommentsSideBarBackDrop";
-    issesSideBarBackDrop.className = "AnnotateJs_Component";
-    issesSideBarBackDrop.style.position = "fixed";
-    issesSideBarBackDrop.style.top = "0px";
-    issesSideBarBackDrop.style.right = "0px";
-    issesSideBarBackDrop.style.width = "100vw";
-    issesSideBarBackDrop.style.height = "100vh";
-    issesSideBarBackDrop.style.backgroundColor = "rgba(0,0,0,0.5)";
-    issesSideBarBackDrop.style.zIndex = "99999994";
-    issesSideBarBackDrop.style.display = "none";
-    issesSideBarBackDrop.onclick = () => {
+    const sideBarBackDrop = document.createElement("div");
+    sideBarBackDrop.id = "AnnotateJs_CommentsSideBarBackDrop";
+    sideBarBackDrop.className = "AnnotateJs_Component";
+    sideBarBackDrop.style.position = "fixed";
+    sideBarBackDrop.style.top = "0px";
+    sideBarBackDrop.style.right = "0px";
+    sideBarBackDrop.style.width = "100vw";
+    sideBarBackDrop.style.height = "100vh";
+    sideBarBackDrop.style.backgroundColor = "rgba(0,0,0,0.5)";
+    sideBarBackDrop.style.zIndex = "99999994";
+    sideBarBackDrop.style.display = "none";
+    sideBarBackDrop.onclick = () => {
         toogleCommentSideBar();
     };
-    document.body.appendChild(issesSideBarBackDrop);
+    document.body.appendChild(sideBarBackDrop);
     // let style = document.createElement("style");
     // style.type = "text/css";
     // let keyFrames =
@@ -318,6 +329,18 @@ export function enableScroll() {
     window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
 }
 
+function checkVisible(elm) {
+    var rect = elm.getBoundingClientRect();
+    var viewHeight = Math.max(
+        document.documentElement.clientHeight,
+        window.innerHeight
+    );
+    // return !(rect.top < 0 || rect.bottom - viewHeight >= 0);
+    if (rect.top < 0) return 1;
+    if (rect.bottom - viewHeight >= 0) return 2;
+    return 0;
+}
+
 export const startAnnotation = () => {
     document.body.style.userSelect = "none";
     // window.addEventListener("mouseover", function (e) {
@@ -367,14 +390,37 @@ export const startAnnotation = () => {
         if (yPos - 250 < 0) {
             yPos += 250;
         }
-        if (e.offsetY + 200 > window.innerHeight) {
-            xPos -= 100;
-        }
-        if (e.offsetY - 100 <= 0) {
-            xPos += 100;
-        }
+        console.log(
+            e.pageY,
+            window.screenY + window.outerHeight,
+            (e.pageY % window.innerHeight) +
+                window.innerHeight * (e.pageY / window.innerHeight)
+        );
+        // if (
+        //     e.pageY + 300 >
+        //     (e.pageY % window.innerHeight) +
+        //         window.innerHeight * (e.pageY / window.innerHeight)
+        // ) {
+        //     xPos -= 300;
+        // }
+        // if (
+        //     e.pageY - 100 >
+        //     (e.pageY % window.innerHeight) +
+        //         window.innerHeight * (e.pageY / window.innerHeight)
+        // ) {
+        //     xPos += 100;
+        // }
         annotateJsCommentBoxDiv.style.top = xPos + "px";
         annotateJsCommentBoxDiv.style.left = yPos + "px";
+        const vis = checkVisible(annotateJsCommentBoxDiv);
+        console.log(xPos, vis);
+        if (vis == 1) {
+            xPos += 100;
+        }
+        if (vis == 2) {
+            xPos -= 100;
+        }
+        annotateJsCommentBoxDiv.style.top = xPos + "px";
         // console.log(e.target);
         // console.log(e.offsetY, window.innerHeight);
         // console.log(e.target.id);
@@ -387,7 +433,7 @@ export const startAnnotation = () => {
         backDropDisplayDiv.style.width = "100vw";
         backDropDisplayDiv.style.height = "100vh";
         backDropDisplayDiv.style.backgroundColor = "rgba(0,0,0,0.3)";
-        backDropDisplayDiv.style.zIndex = "99999910";
+        backDropDisplayDiv.style.zIndex = "99999991";
         backDropDisplayDiv.onclick = function (e) {
             e.stopPropagation();
             closeAnnotateJsCommentBox();
@@ -484,7 +530,6 @@ export const displayHelpDiv = () => {
 // startAnnonatation();
 
 window.onload = function () {
-    console.log("document.onload");
     initializeAnnotateJs();
     checkUserLogin();
     assignUniqueClasses();

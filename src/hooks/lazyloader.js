@@ -29,7 +29,7 @@ export const LazyLoaderHook = (pagenumber, idx) => {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
         })
             .then((res) => {
-                // console.log("Hook: ", res.data.hasMore);
+                console.log("Hook: ", res.data);
                 setcomments((comments) => {
                     // console.log(comments, res.data.comments);
                     return comments.concat(res.data.comments);

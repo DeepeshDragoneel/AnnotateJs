@@ -4,7 +4,7 @@
     "description": "An annotating tool that can help you tag comments to each element in the webpage",
     "main": "main.js",
     "scripts": {
-        "test": "react-scripts test",
+        "test": "react-scripts test --coverage",
         "build": "webpack --config webpack.config.js --watch"
     },
     "repository": {
