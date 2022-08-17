@@ -2,7 +2,10 @@ import React, { useState, useContext } from "react";
 import ReactDom from "react-dom";
 import Avatar from "@mui/material/Avatar";
 import "./CommentBox.scss";
-import { closeAnnotateJsCommentBox, postComment } from "../main";
+import {
+    closeAnnotateJsCommentBox,
+    postComment,
+} from "../main";
 import { StoreContext } from "../utils/store";
 
 export const CommentBox = () => {
@@ -45,9 +48,9 @@ export const CommentBox = () => {
             <div className="AnnotateJs_Component commentBoxButtonDiv">
                 <button
                     className="AnnotateJs_Component commentBoxSubmitButton"
-                    onClick={() => {
+                    onClick={async () => {
                         // console.log("Comment: ", Comment);
-                        postComment(Comment);
+                        const itemBeingCommented = await postComment(Comment);
                         setcomments((comments) => {
                             return [
                                 {
@@ -57,11 +60,13 @@ export const CommentBox = () => {
                                         ),
                                     message: Comment,
                                     created_at: new Date(),
+                                    elementIdentifier: itemBeingCommented,
                                 },
                                 ...comments,
                             ];
                         });
                         setComment("");
+                        closeAnnotateJsCommentBox();
                     }}
                 >
                     Comment

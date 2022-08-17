@@ -311,6 +311,7 @@ export const SIdeBar = () => {
                                 className="AnnotateJs_Component annotateJsSideBarBodyDiv"
                                 onClick={() => {
                                     toogleCommentSideBar();
+                                    console.log(item.elementIdentifier);
                                     const element = document.querySelector(
                                         `[${elementIdentifier}="${item.elementIdentifier}"]`
                                     );

@@ -10,6 +10,7 @@ import StoreProvider from "./utils/store";
 
 let itemBeingCommented;
 let elementIdentifier;
+const buttonFunctions = new Map();
 
 // const { loginCard, setloginCard } = useContext(StoreContext);
 
@@ -268,7 +269,7 @@ export const postComment = async (comment) => {
         // }
         console.log(result);
     }
-    closeAnnotateJsCommentBox();
+    return itemBeingCommented;
 };
 
 export const closeAnnotateJsCommentBox = () => {
@@ -349,19 +350,68 @@ export const startAnnotation = () => {
     // window.addEventListener("mousedown", function (e) {
     //     console.log(e.target);
     // });
+    // $("td")
+    //     .find("a")
+    //     .find("input")
+    //     .each(function () {
+    //         $(this).addClass("disabled-link");
+    //     });
+
+    // $(".disabled-link").on("click", false);
     windowOnMouseOverPrevFunc = window.onmouseover;
     windowOnMouseDownPrevFunc = window.onmousedown;
-    const buttonAndLinks = document.querySelectorAll("a, button, li");
+    const buttonAndLinks = document.querySelectorAll(
+        "a, button,li, input, textarea, select"
+    );
     for (let i = 0; i < buttonAndLinks.length; i++) {
         // console.log(buttonAndLinks[i]);
-        buttonAndLinks[i].addEventListener("click", function (e) {
-            if (e.target.id === "AnnotateJs_Container") {
-                return;
-            }
-            if (e.target.classList.contains("AnnotateJs_Component")) return;
-            e.preventDefault();
-            console.log(e.target.classList);
-        });
+        if (buttonAndLinks[i].id === "AnnotateJs_Container") {
+            continue;
+        }
+        if (buttonAndLinks[i].classList.contains("AnnotateJs_Component"))
+            continue;
+        if (
+            buttonAndLinks[i].tagName === "A" ||
+            buttonAndLinks[i].tagName === "LINK"
+        ) {
+            var href = buttonAndLinks[i].href;
+            buttonAndLinks[i].setAttribute("rel", href);
+            buttonAndLinks[i].href = "javascript:;";
+        } else if (
+            buttonAndLinks[i].tagName === "INPUT" ||
+            buttonAndLinks[i].tagName === "TEXTAREA" ||
+            buttonAndLinks[i].tagName === "SELECT"
+        ) {
+            buttonAndLinks[i].disabled = true;
+
+            console.log(buttonAndLinks[i]);
+        } else if (buttonAndLinks[i].tagName === "BUTTON") {
+            buttonFunctions[
+                buttonAndLinks[i].getAttribute(`${elementIdentifier}`)
+            ] = buttonAndLinks[i].onclick;
+            buttonAndLinks[i].onclick = (e) => {
+                e.preventDefault();
+            };
+            buttonAndLinks[i].style.cursor = "default";
+            // buttonAndLinks[i].click(function (event) {
+            //     event.preventDefault();
+            // });
+            // buttonAndLinks[i].disabled = true;
+            // const wrapperDiv = document.createElement("div");
+            // wrapperDiv.setAttribute(
+            //     `${elementIdentifier}`,
+            //     `${buttonAndLinks[i].getAttribute(elementIdentifier)}`
+            // );
+            // buttonAndLinks[i].parentNode.insertBefore(wrapperDiv, buttonAndLinks[i]);
+            // buttonAndLinks[i].remove();
+            // wrapperDiv.appendChild(buttonAndLinks[i]);
+            // wrapperDiv.onmouseenter = function (e) {
+            //     updateMask(e.target);
+            // };
+            // wrapperDiv.onclick = function (e) {
+            //     console.log(e.target);
+            // }
+        }
     }
     window.onmouseover = function (e) {
         if (e.target.id === "AnnotateJs_Container") {
@@ -377,6 +427,7 @@ export const startAnnotation = () => {
         //     return c.includes("AnnotateJs_");
         // });
         itemBeingCommented = e.target.getAttribute(elementIdentifier);
+        console.log(itemBeingCommented);
         const annotateJsCommentBoxDiv = document.getElementById(
             "AnnotateJs_CommentBoxDiv"
         );
@@ -390,12 +441,6 @@ export const startAnnotation = () => {
         if (yPos - 250 < 0) {
             yPos += 250;
         }
-        console.log(
-            e.pageY,
-            window.screenY + window.outerHeight,
-            (e.pageY % window.innerHeight) +
-                window.innerHeight * (e.pageY / window.innerHeight)
-        );
         // if (
         //     e.pageY + 300 >
         //     (e.pageY % window.innerHeight) +
@@ -413,7 +458,6 @@ export const startAnnotation = () => {
         annotateJsCommentBoxDiv.style.top = xPos + "px";
         annotateJsCommentBoxDiv.style.left = yPos + "px";
         const vis = checkVisible(annotateJsCommentBoxDiv);
-        console.log(xPos, vis);
         if (vis == 1) {
             xPos += 100;
         }
@@ -439,7 +483,7 @@ export const startAnnotation = () => {
             closeAnnotateJsCommentBox();
         };
         document.body.appendChild(backDropDisplayDiv);
-        disableScroll();
+        // disableScroll();
     };
 
     window.onmousedown = function (e) {
@@ -480,6 +524,32 @@ export const startAnnotation = () => {
 
 export const stopAnnotation = () => {
     document.body.style.userSelect = "auto";
+    // document.body.style.pointerEvents = "auto";
+    const buttonAndLinks = document.querySelectorAll("a, button,li, input");
+    for (let i = 0; i < buttonAndLinks.length; i++) {
+        // console.log(buttonAndLinks[i]);
+        if (buttonAndLinks[i].id === "AnnotateJs_Container") {
+            continue;
+        }
+        if (buttonAndLinks[i].classList.contains("AnnotateJs_Component"))
+            continue;
+        if (
+            buttonAndLinks[i].tagName === "A" ||
+            buttonAndLinks[i].tagName === "LINK"
+        ) {
+            var href = buttonAndLinks[i].getAttribute("rel");
+            buttonAndLinks[i].removeAttribute("rel");
+            buttonAndLinks[i].href = href;
+        } else if (buttonAndLinks[i].tagName === "BUTTON") {
+            buttonAndLinks[i].onclick =
+                buttonFunctions[
+                    buttonAndLinks[i].getAttribute(`${elementIdentifier}`)
+                ];
+            buttonAndLinks[i].style.cursor = "pointer";
+        } else if (buttonAndLinks[i].tagName === "INPUT") {
+            buttonAndLinks[i].disabled = false;
+        }
+    }
     window.onmouseover = windowOnMouseOverPrevFunc;
     window.onmousedown = windowOnMouseDownPrevFunc;
     let elements = document.getElementsByClassName("highlight-wrap");
@@ -491,6 +561,7 @@ export const stopAnnotation = () => {
 
 export const toogleCommentSideBar = () => {
     // console.log("toogleCommentSideBar");
+
     const annotateJsCommentBoxDiv = document.getElementById(
         "AnnotateJs_CommentsSideBarDiv"
     );
