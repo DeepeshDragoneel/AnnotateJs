@@ -1,5 +1,5 @@
 let START_ANNONATATION = false;
-export const serverUrl = "http://localhost:8000";
+export const serverUrl = "https://annotate-js-backend.herokuapp.com/";
 export let elementIdentifier = "data-annotatejs";
 
 export const toogleAnnotation = () => {

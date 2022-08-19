@@ -56,7 +56,7 @@ export const checkUserLogin = async () => {
         //     },
         // });
         const result = await axios.post(
-            `${serverUrl}/checkUser`,
+            `${serverUrl}checkUser`,
             {
                 AnnotateJsUserToken: AnnotateJsUserToken,
                 domain: window.location.hostname,
@@ -96,7 +96,7 @@ export const initializeAnnotateJs = () => {
         let adminUsers = my_var_2.split(",");
         axios({
             method: "post",
-            url: "http://localhost:8000/addUsers",
+            url: "https://annotate-js-backend.herokuapp.com/addUsers",
             data: {
                 allowedUsers: allowedUsers,
                 domain: window.location.hostname,
@@ -254,7 +254,7 @@ export const postComment = async (comment) => {
     if (itemBeingCommented !== undefined && itemBeingCommented !== null) {
         const result = await axios({
             method: "POST",
-            url: `http://localhost:8000/postComment`,
+            url: `https://annotate-js-backend.herokuapp.com/`,
             data: {
                 comment: comment,
                 itemBeingCommented: itemBeingCommented,

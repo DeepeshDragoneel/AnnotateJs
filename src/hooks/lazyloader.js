@@ -18,7 +18,7 @@ export const LazyLoaderHook = (pagenumber, idx) => {
         seterror(false);
         axios({
             method: "GET",
-            url: `${serverUrl}/getComments`,
+            url: `${serverUrl}getComments`,
             params: {
                 pageNumber: pagenumber,
                 pageOfDomain: window.location.href,

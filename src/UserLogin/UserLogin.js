@@ -28,7 +28,7 @@ export const UserLogin = () => {
             console.log("Login");
             const result = await axios({
                 method: "post",
-                url: "http://localhost:8000/userLogin",
+                url: "https://annotate-js-backend.herokuapp.com/userLogin",
                 data: {
                     email: email,
                     password: password,
@@ -95,7 +95,7 @@ export const UserLogin = () => {
             } else {
                 const result = await axios({
                     method: "post",
-                    url: "http://localhost:8000/userRegister",
+                    url: "https://annotate-js-backend.herokuapp.com/userRegister",
                     data: {
                         userName: username,
                         email: email,
