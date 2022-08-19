@@ -254,7 +254,7 @@ export const postComment = async (comment) => {
     if (itemBeingCommented !== undefined && itemBeingCommented !== null) {
         const result = await axios({
             method: "POST",
-            url: `https://annotate-js-backend.herokuapp.com/`,
+            url: `https://annotate-js-backend.herokuapp.com/postComment`,
             data: {
                 comment: comment,
                 itemBeingCommented: itemBeingCommented,
