@@ -583,6 +583,7 @@ export const toogleCommentSideBar = () => {
 export const closeAnnotateJsHelpDiv = () => {
     const annotateJsHelpDiv = document.getElementById("AnnotateJs_HelpDiv");
     annotateJsHelpDiv.style.display = "none";
+    enableScroll();
 };
 
 export const displayHelpDiv = () => {
